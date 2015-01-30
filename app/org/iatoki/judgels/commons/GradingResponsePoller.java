@@ -4,7 +4,6 @@ import org.iatoki.judgels.commons.models.domains.SubmissionModel;
 import org.iatoki.judgels.gabriel.FakeClientMessage;
 import org.iatoki.judgels.gabriel.FakeSealtiel;
 import org.iatoki.judgels.gabriel.GradingResponse;
-import org.iatoki.judgels.gabriel.GradingResult;
 import play.db.jpa.JPA;
 
 public final class GradingResponsePoller<SM extends SubmissionModel> implements Runnable {
