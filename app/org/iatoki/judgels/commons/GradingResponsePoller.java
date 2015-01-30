@@ -25,13 +25,11 @@ public final class GradingResponsePoller<SM extends SubmissionModel> implements 
     }
 
     private void processMessage(FakeClientMessage message) {
-        System.out.println("YEY");
         if (message == null) {
             return;
         }
         try {
             GradingResponse response = GradingResponses.parseFromJson(message.getMessageType(), message.getMessage());
-            System.out.println("VERDIK " + response.getResult().getVerdict());
             service.updateResult(response.getSubmissionJid(), response.getResult());
         } catch (BadGradingResponseException e) {
             System.out.println("Bad grading response: " + e.getMessage());

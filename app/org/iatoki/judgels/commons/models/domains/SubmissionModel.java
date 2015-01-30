@@ -12,13 +12,12 @@ public abstract class SubmissionModel extends AbstractJudgelsModel {
 
     public String problemJid;
 
-    @Enumerated(EnumType.STRING)
-    public Verdict verdict;
+    public String verdictCode;
+
+    public String verdictName;
 
     public int score;
 
-    public String message;
-
     @Column(columnDefinition = "TEXT")
-    public char[] details;
+    public String details;
 }
