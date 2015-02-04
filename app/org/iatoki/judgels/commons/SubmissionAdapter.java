@@ -9,7 +9,7 @@ import play.mvc.Http;
 import play.twirl.api.Html;
 
 public interface SubmissionAdapter {
-    Html renderViewStatement(Call postSubmitCall, String statement, GradingConfig config);
+    Html renderViewStatement(Call postSubmitCall, String name, String statement, GradingConfig config);
 
     Html renderViewSubmission(long submissionId, Verdict verdict, int score, String detailsAsJson, GradingConfig config);
 
