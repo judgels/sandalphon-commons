@@ -12,6 +12,8 @@ public abstract class SubmissionModel extends AbstractJudgelsModel {
 
     public String problemJid;
 
+    public String gradingLanguage;
+
     public String verdictCode;
 
     public String verdictName;

@@ -7,5 +7,5 @@ public interface SubmissionService {
 
     Submission findSubmissionById(long submissionId);
 
-    void submit(String problemJid, String problemGradingType, long problemTimeUpdate, GradingSource source);
+    String submit(String problemJid, String problemGradingType, String gradingLanguage, long problemTimeUpdate, GradingSource source);
 }

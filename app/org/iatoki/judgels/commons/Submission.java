@@ -7,16 +7,18 @@ public final class Submission {
     private final String jid;
     private final String problemJid;
     private final String authorJid;
+    private final String gradingLanguage;
     private final long timestamp;
     private final Verdict verdict;
     private final int score;
     private final String details;
 
-    public Submission(long id, String jid, String problemJid, String authorJid, long timestamp, Verdict verdict, int score, String details) {
+    public Submission(long id, String jid, String problemJid, String authorJid, String gradingLanguage, long timestamp, Verdict verdict, int score, String details) {
         this.id = id;
         this.jid = jid;
         this.problemJid = problemJid;
         this.authorJid = authorJid;
+        this.gradingLanguage = gradingLanguage;
         this.timestamp = timestamp;
         this.verdict = verdict;
         this.score = score;
@@ -37,6 +39,10 @@ public final class Submission {
 
     public String getAuthorJid() {
         return authorJid;
+    }
+
+    public String getGradingLanguage() {
+        return gradingLanguage;
     }
 
     public long getTimestamp() {
