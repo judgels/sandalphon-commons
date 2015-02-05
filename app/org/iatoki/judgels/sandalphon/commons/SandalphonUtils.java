@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
@@ -90,8 +91,8 @@ public final class SandalphonUtils {
         }
     }
 
-    public static URI getTOTPEndpoint(String problemJid, int tOTP, String lang) {
-        return getEndpoint("totp/" + getClientId() + "/" + problemJid + "/statement/" + tOTP + "/" + lang);
+    public static URI getTOTPEndpoint(String problemJid, int tOTP, String lang, String postSubmitUri) {
+        return getEndpoint("totp/" + getClientId() + "/" + problemJid + "/statement/" + tOTP + "/" + lang + "/" + URLEncoder.encode(postSubmitUri));
     }
 
     public static URI getEndpoint(String service) {
