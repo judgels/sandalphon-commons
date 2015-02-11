@@ -1,4 +1,4 @@
-package org.iatoki.judgels.commons;
+package org.iatoki.judgels.gabriel.commons;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;

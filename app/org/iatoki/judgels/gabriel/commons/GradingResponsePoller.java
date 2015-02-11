@@ -1,9 +1,11 @@
-package org.iatoki.judgels.commons;
+package org.iatoki.judgels.gabriel.commons;
 
 import org.iatoki.judgels.gabriel.FakeClientMessage;
 import org.iatoki.judgels.gabriel.FakeSealtiel;
 import org.iatoki.judgels.gabriel.GradingResponse;
+import org.iatoki.judgels.sandalphon.commons.SubmissionUpdaterService;
 import play.db.jpa.JPA;
+import play.mvc.Http;
 
 public final class GradingResponsePoller implements Runnable {
     private final SubmissionUpdaterService service;
@@ -27,9 +29,8 @@ public final class GradingResponsePoller implements Runnable {
             return;
         }
         try {
-            System.out.println(message.getMessage());
             GradingResponse response = GradingResponses.parseFromJson(message.getMessageType(), message.getMessage());
-            service.updateResult(response.getSubmissionJid(), response.getResult());
+            service.updateResult(response.getSubmissionJid(), response.getResult(), "waw", Http.Context.current().request().remoteAddress());
         } catch (BadGradingResponseException e) {
             System.out.println("Bad grading response: " + e.getMessage());
         }
