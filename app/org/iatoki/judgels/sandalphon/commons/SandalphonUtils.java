@@ -17,12 +17,12 @@ import java.security.NoSuchAlgorithmException;
 
 public final class SandalphonUtils {
 
-    public static String getClientId() {
-        String clientId = Play.application().configuration().getString("sandalphon.clientId");
-        if (clientId == null) {
-            throw new IllegalStateException("sandalphon.clientId not found in configuration");
+    public static String getClientJid() {
+        String clientJid = Play.application().configuration().getString("sandalphon.clientJid");
+        if (clientJid == null) {
+            throw new IllegalStateException("sandalphon.clientJid not found in configuration");
         }
-        return clientId;
+        return clientJid;
     }
 
     public static String getClientSecret() {
@@ -37,12 +37,10 @@ public final class SandalphonUtils {
         HTTPRequest httpRequest;
         try {
             httpRequest = new HTTPRequest(HTTPRequest.Method.GET, getEndpoint("verifyProblem").toURL());
-            httpRequest.setQuery("clientId=" + getClientId() + "&clientSecret=" + getClientSecret() + "&problemJid=" + problemJid);
+            httpRequest.setQuery("clientJid=" + getClientJid() + "&clientSecret=" + getClientSecret() + "&problemJid=" + problemJid);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
-
-        System.out.println(httpRequest.getQuery());
 
         try {
             HTTPResponse httpResponse = httpRequest.send();
@@ -92,7 +90,7 @@ public final class SandalphonUtils {
     }
 
     public static URI getTOTPEndpoint(String problemJid, int tOTP, String lang, String postSubmitUri) {
-        return getEndpoint("totp/" + getClientId() + "/" + problemJid + "/statement/" + tOTP + "/" + lang + "/" + URLEncoder.encode(postSubmitUri));
+        return getEndpoint("totp/" + getClientJid() + "/" + problemJid + "/statement/" + tOTP + "/" + lang + "/" + URLEncoder.encode(postSubmitUri));
     }
 
     public static URI getEndpoint(String service) {

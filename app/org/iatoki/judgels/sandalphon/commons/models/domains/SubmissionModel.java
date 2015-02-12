@@ -12,7 +12,11 @@ public abstract class SubmissionModel extends AbstractJudgelsModel {
 
     public String problemJid;
 
+    public String contestJid;
+
     public String gradingLanguage;
+
+    public String gradingEngine;
 
     public String verdictCode;
 

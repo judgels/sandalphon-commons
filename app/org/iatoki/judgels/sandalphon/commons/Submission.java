@@ -16,6 +16,8 @@ public interface Submission {
 
     String getGradingLanguage();
 
+    String getGradingEngine();
+
     long getTimestamp();
 
     Verdict getVerdict();
