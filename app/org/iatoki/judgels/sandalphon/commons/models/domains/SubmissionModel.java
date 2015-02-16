@@ -27,3 +27,4 @@ public abstract class SubmissionModel extends AbstractJudgelsModel {
     @Column(columnDefinition = "TEXT")
     public String details;
 }
+
