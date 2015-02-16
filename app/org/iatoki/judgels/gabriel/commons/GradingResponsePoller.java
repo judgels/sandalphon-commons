@@ -7,6 +7,8 @@ import org.iatoki.judgels.sealtiel.client.Sealtiel;
 import play.db.jpa.JPA;
 import play.mvc.Http;
 
+import java.io.IOException;
+
 public final class GradingResponsePoller implements Runnable {
     private final SubmissionUpdaterService service;
     private final Sealtiel sealtiel;
@@ -21,7 +23,6 @@ public final class GradingResponsePoller implements Runnable {
         JPA.withTransaction(() -> {
             ClientMessage message = sealtiel.fetchMessage();
             processMessage(message);
-            sealtiel.sendConfirmation(message.getId());
         });
     }
 
@@ -31,8 +32,9 @@ public final class GradingResponsePoller implements Runnable {
         }
         try {
             GradingResponse response = GradingResponses.parseFromJson(message.getMessageType(), message.getMessage());
-            service.updateResult(response.getSubmissionJid(), response.getResult(), "waw", Http.Context.current().request().remoteAddress());
-        } catch (BadGradingResponseException e) {
+            service.updateResult(response.getSubmissionJid(), response.getResult(), message.getSourceClientJid(), Http.Context.current().request().remoteAddress());
+            sealtiel.sendConfirmation(message.getId());
+        } catch (BadGradingResponseException | IOException e) {
             System.out.println("Bad grading response: " + e.getMessage());
         }
     }
