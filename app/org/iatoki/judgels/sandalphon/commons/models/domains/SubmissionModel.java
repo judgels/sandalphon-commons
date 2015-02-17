@@ -22,6 +22,8 @@ public abstract class SubmissionModel extends AbstractJudgelsModel {
 
     public String verdictName;
 
+    public String message;
+
     public int score;
 
     @Column(columnDefinition = "TEXT")
