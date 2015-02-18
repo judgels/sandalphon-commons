@@ -33,7 +33,7 @@ public final class SandalphonUtils {
         return clientSecret;
     }
 
-    public static boolean verifyProblemJid(String problemJid) {
+    public static String verifyProblemJid(String problemJid) {
         HTTPRequest httpRequest;
         try {
             httpRequest = new HTTPRequest(HTTPRequest.Method.GET, getEndpoint("verifyProblem").toURL());
@@ -45,9 +45,9 @@ public final class SandalphonUtils {
         try {
             HTTPResponse httpResponse = httpRequest.send();
             if (httpResponse.getStatusCode() == HTTPResponse.SC_OK) {
-                return true;
+                return httpResponse.getContent();
             } else {
-                return false;
+                return null;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

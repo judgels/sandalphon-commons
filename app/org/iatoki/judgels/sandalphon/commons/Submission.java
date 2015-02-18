@@ -2,6 +2,8 @@ package org.iatoki.judgels.sandalphon.commons;
 
 import org.iatoki.judgels.gabriel.Verdict;
 
+import java.util.Date;
+
 public interface Submission {
 
     long getId();
@@ -18,7 +20,7 @@ public interface Submission {
 
     String getGradingEngine();
 
-    long getTimestamp();
+    Date getTime();
 
     Verdict getVerdict();
 
