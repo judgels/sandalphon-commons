@@ -15,6 +15,7 @@ public abstract class AbstractSubmissionUpdaterServiceImpl<M extends SubmissionM
     @Override
     public final void updateResult(String submissionJid, GradingResult result, String grader, String graderIpAddress) {
         M submissionModel = submissionDao.findByJid(submissionJid);
+
         submissionModel.verdictCode = result.getVerdict().getCode();
         submissionModel.verdictName = result.getVerdict().getName();
         submissionModel.score = result.getScore();

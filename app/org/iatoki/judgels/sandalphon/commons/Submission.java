@@ -22,8 +22,6 @@ public interface Submission {
 
     Verdict getVerdict();
 
-    String getMessage();
-
     int getScore();
 
     String getDetails();
