@@ -1,4 +1,4 @@
-package org.iatoki.judgels.sandalphon.commons.models.domains;
+package org.iatoki.judgels.gabriel.commons.models.domains;
 
 import org.iatoki.judgels.commons.models.JidPrefix;
 import org.iatoki.judgels.commons.models.domains.AbstractJudgelsModel;
@@ -7,16 +7,10 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-@JidPrefix("SUBM")
-public abstract class SubmissionModel extends AbstractJudgelsModel {
+@JidPrefix("GRAD")
+public abstract class AbstractGradingModel extends AbstractJudgelsModel {
 
-    public String problemJid;
-
-    public String contestJid;
-
-    public String gradingLanguage;
-
-    public String gradingEngine;
+    public String submissionJid;
 
     public String verdictCode;
 
@@ -27,4 +21,3 @@ public abstract class SubmissionModel extends AbstractJudgelsModel {
     @Column(columnDefinition = "TEXT")
     public String details;
 }
-

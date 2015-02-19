@@ -1,4 +1,4 @@
-package org.iatoki.judgels.sandalphon.commons;
+package org.iatoki.judgels.gabriel.commons;
 
 import org.iatoki.judgels.commons.AbstractJidCacheService;
 import org.iatoki.judgels.gabriel.GradingConfig;
@@ -21,7 +21,7 @@ public interface SubmissionAdapter {
 
     GradingSource createGradingSourceFromPastSubmission(File submissionBaseDir, String submissionJid);
 
-    GradingRequest createGradingRequest(String submissionJid, String problemJid, Date gradingLastUpdateTime, String gradingEngine, String gradingLanguage, GradingSource source);
+    GradingRequest createGradingRequest(String gradingJid, String problemJid, Date gradingLastUpdateTime, String gradingEngine, String gradingLanguage, GradingSource source);
 
     void storeSubmissionFiles(File submissionBaseDir, String submissionJid, GradingSource source);
 }

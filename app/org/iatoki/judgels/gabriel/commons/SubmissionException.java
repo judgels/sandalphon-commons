@@ -1,4 +1,4 @@
-package org.iatoki.judgels.sandalphon.commons;
+package org.iatoki.judgels.gabriel.commons;
 
 public final class SubmissionException extends RuntimeException {
     public SubmissionException(String message) {
