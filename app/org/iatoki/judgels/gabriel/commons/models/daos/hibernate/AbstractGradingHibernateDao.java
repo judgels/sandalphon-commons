@@ -1,5 +1,6 @@
 package org.iatoki.judgels.gabriel.commons.models.daos.hibernate;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.iatoki.judgels.commons.models.daos.hibernate.AbstractJudgelsHibernateDao;
@@ -20,13 +21,15 @@ public abstract class AbstractGradingHibernateDao<M extends AbstractGradingModel
 
     @Override
     public final Map<String, List<M>> findGradingsForSubmissions(List<String> submissionJids) {
+        if (submissionJids.isEmpty()) {
+            return ImmutableMap.of();
+        }
+
         CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
         CriteriaQuery<M> query = cb.createQuery(getModelClass());
         Root<M> root = query.from(getModelClass());
 
-        if (!submissionJids.isEmpty()) {
-            query.where(root.get("submissionJid").in(submissionJids));
-        }
+        query.where(root.get("submissionJid").in(submissionJids));
 
         List<M> models = JPA.em().createQuery(query).getResultList();
 
