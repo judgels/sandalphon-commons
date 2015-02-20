@@ -54,6 +54,14 @@ public final class SandalphonUtils {
         }
     }
 
+    public static URI getRenderImageUri(String problemJid, String imageName) {
+        try {
+            return getEndpoint("problem/" + problemJid + "/render/" + imageName).toURL().toURI();
+        } catch (MalformedURLException | URISyntaxException e) {
+            return null;
+        }
+    }
+
     public static int calculateTOTPCode(String keyString, long tm) {
         long totpMod = 1000000;
         long timeStep = 30000;
