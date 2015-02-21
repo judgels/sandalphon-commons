@@ -15,7 +15,7 @@ public interface SubmissionAdapter {
     //TODO: add CSRF token
     Html renderViewStatement(String postSubmitUri, String name, String statement, GradingConfig config, String engine, Date gradingLastUpdateTime);
 
-    Html renderViewSubmission(Submission submission, GradingSource source, AbstractJidCacheService<?> jidCacheService);
+    Html renderViewSubmission(Submission submission, GradingSource source, AbstractJidCacheService<?> jidCacheService, String problemAlias, String gradingLanguageName, String contestName);
 
     GradingSource createGradingSourceFromNewSubmission(Http.MultipartFormData body);
 
