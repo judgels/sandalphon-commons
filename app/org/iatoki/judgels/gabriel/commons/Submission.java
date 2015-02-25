@@ -65,14 +65,14 @@ public final class Submission {
     }
 
     public Verdict getLatestVerdict() {
-        return gradings.get(0).getVerdict();
+        return gradings.get(gradings.size() - 1).getVerdict();
     }
 
     public int getLatestScore() {
-        return gradings.get(0).getScore();
+        return gradings.get(gradings.size() - 1).getScore();
     }
 
     public String getLatestDetails() {
-        return gradings.get(0).getDetails();
+        return gradings.get(gradings.size() - 1).getDetails();
     }
 }
