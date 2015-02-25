@@ -12,6 +12,8 @@ public interface SubmissionService {
 
     List<Submission> findAllSubmissionsByContestJid(String contestJid);
 
+    List<Submission> findNewSubmissionsByContestJidByContestants(String contestJid, List<String> problemJids, List<String> contestantJids, long lastTime);
+
     Page<Submission> pageSubmissions(long pageIndex, long pageSize, String orderBy, String orderDir, String authorJid, String problemJid, String contestJid);
 
     String submit(String problemJid, String contestJid, String gradingEngine, String gradingLanguage, GradingSource gradingSource);

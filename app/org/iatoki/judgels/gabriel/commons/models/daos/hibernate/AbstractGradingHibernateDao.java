@@ -48,4 +48,34 @@ public abstract class AbstractGradingHibernateDao<M extends AbstractGradingModel
 
         return result;
     }
+
+    @Override
+    public Map<String, List<M>> findGradingsForSubmissionsSinceLastTime(List<String> submissionJids, long lastTime) {
+        if (submissionJids.isEmpty()) {
+            return ImmutableMap.of();
+        }
+
+        CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
+        CriteriaQuery<M> query = cb.createQuery(getModelClass());
+        Root<M> root = query.from(getModelClass());
+
+        query.where(cb.and(root.get("submissionJid").in(submissionJids)), cb.gt(root.get("timeUpdate"), lastTime));
+
+        List<M> models = JPA.em().createQuery(query).getResultList();
+
+        Map<String, List<M>> result = Maps.newHashMap();
+
+        for (M model : models) {
+            if (result.containsKey(model.submissionJid)) {
+                result.get(model.submissionJid).add(model);
+            } else {
+                @SuppressWarnings("unchecked")
+                List<M> list = Lists.newArrayList(model);
+
+                result.put(model.submissionJid, list);
+            }
+        }
+
+        return result;
+    }
 }

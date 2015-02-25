@@ -8,4 +8,6 @@ import java.util.List;
 public interface BaseSubmissionDao<M extends AbstractSubmissionModel> extends JudgelsDao<M> {
 
     M createSubmissionModel();
+
+    List<M> findByContestJidInContestantJidsAndProblemJids(String contestJid, List<String> contestantJids, List<String> problemJids);
 }

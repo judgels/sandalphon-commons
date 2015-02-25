@@ -28,6 +28,7 @@ public final class GradingResponsePoller implements Runnable {
         if (message == null) {
             return;
         }
+
         try {
             GradingResponse response = GradingResponses.parseFromJson(message.getMessageType(), message.getMessage());
             submissionService.grade(response.getSubmissionJid(), response.getResult(), message.getSourceClientJid(), "localhost");
