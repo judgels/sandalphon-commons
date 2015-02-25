@@ -14,7 +14,9 @@ public interface SubmissionService {
 
     Page<Submission> pageSubmissions(long pageIndex, long pageSize, String orderBy, String orderDir, String authorJid, String problemJid, String contestJid);
 
-    String submit(String problemJid, String contestJid, String gradingEngine, String gradingLanguage, Date gradingLastUpdateTime, GradingSource gradingSource);
+    String submit(String problemJid, String contestJid, String gradingEngine, String gradingLanguage, GradingSource gradingSource);
+
+    void regrade(String submissionJid, GradingSource gradingSource);
 
     void grade(String submissionJid, GradingResult result, String grader, String graderIpAddress);
 }

@@ -13,7 +13,7 @@ import java.util.Date;
 public interface SubmissionAdapter {
 
     //TODO: add CSRF token
-    Html renderViewStatement(String postSubmitUri, String name, String statement, GradingConfig config, String engine, Date gradingLastUpdateTime);
+    Html renderViewStatement(String postSubmitUri, String name, String statement, GradingConfig config, String engine);
 
     Html renderViewSubmission(Submission submission, GradingSource source, String authorName, String problemAlias, String problemName, String gradingLanguageName, String contestName);
 
@@ -21,7 +21,7 @@ public interface SubmissionAdapter {
 
     GradingSource createGradingSourceFromPastSubmission(File submissionBaseDir, String submissionJid);
 
-    GradingRequest createGradingRequest(String gradingJid, String problemJid, Date gradingLastUpdateTime, String gradingEngine, String gradingLanguage, GradingSource source);
+    GradingRequest createGradingRequest(String gradingJid, String problemJid, String gradingEngine, String gradingLanguage, GradingSource source);
 
     void storeSubmissionFiles(File submissionBaseDir, String submissionJid, GradingSource source);
 }

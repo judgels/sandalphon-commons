@@ -75,7 +75,7 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
     }
 
     @Override
-    public final String submit(String problemJid, String contestJid, String gradingEngine, String gradingLanguage, Date gradingLastUpdateTime, GradingSource gradingSource) {
+    public final String submit(String problemJid, String contestJid, String gradingEngine, String gradingLanguage, GradingSource gradingSource) {
         SM submissionModel = submissionDao.createSubmissionModel();
 
         submissionModel.problemJid = problemJid;
@@ -85,24 +85,16 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
 
         submissionDao.persist(submissionModel, IdentityUtils.getUserJid(), IdentityUtils.getIpAddress());
 
-        GM gradingModel = gradingDao.createGradingModel();
-
-        gradingModel.submissionJid = submissionModel.jid;
-        gradingModel.verdictCode = "?";
-        gradingModel.verdictName = "Pending";
-        gradingModel.score = 0;
-
-        gradingDao.persist(gradingModel, IdentityUtils.getUserJid(), IdentityUtils.getIpAddress());
-
-        GradingRequest request = SubmissionAdapters.fromGradingEngine(gradingEngine).createGradingRequest(gradingModel.jid, problemJid, gradingLastUpdateTime, gradingEngine, gradingLanguage, gradingSource);
-
-        try {
-            sealtiel.sendMessage(new ClientMessage(gabrielClientJid, request.getClass().getSimpleName(), new Gson().toJson(request)));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        requestGrading(submissionModel, gradingSource);
 
         return submissionModel.jid;
+    }
+
+    @Override
+    public void regrade(String submissionJid, GradingSource gradingSource) {
+        SM submissionModel = submissionDao.findByJid(submissionJid);
+
+        requestGrading(submissionModel, gradingSource);
     }
 
     @Override
@@ -125,5 +117,26 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
 
     private Grading createGradingFromModel(GM gradingModel) {
         return new Grading(gradingModel.id, gradingModel.jid, new Verdict(gradingModel.verdictCode, gradingModel.verdictName), gradingModel.score, gradingModel.details);
+    }
+
+    private void requestGrading(SM submissionModel, GradingSource gradingSource) {
+        GM gradingModel = gradingDao.createGradingModel();
+
+        gradingModel.submissionJid = submissionModel.jid;
+        gradingModel.verdictCode = "?";
+        gradingModel.verdictName = "Pending";
+        gradingModel.score = 0;
+
+        gradingDao.persist(gradingModel, IdentityUtils.getUserJid(), IdentityUtils.getIpAddress());
+
+        SubmissionAdapter adapter = SubmissionAdapters.fromGradingEngine(submissionModel.gradingEngine);
+
+        GradingRequest request = adapter.createGradingRequest(gradingModel.jid, submissionModel.problemJid, submissionModel.gradingEngine, submissionModel.gradingLanguage, gradingSource);
+
+        try {
+            sealtiel.sendMessage(new ClientMessage(gabrielClientJid, request.getClass().getSimpleName(), new Gson().toJson(request)));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
