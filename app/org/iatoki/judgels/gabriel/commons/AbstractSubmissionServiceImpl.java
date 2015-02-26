@@ -116,14 +116,14 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
     }
 
     @Override
-    public Map<String, String> getProblemJidMapBySubmissionJids(List<String> submissionJids) {
+    public List<Submission> findSubmissionsWithoutGradingsByJids(List<String> submissionJids) {
         List<SM> submissionModels = submissionDao.findByJids(submissionJids);
 
-        return submissionModels.stream().collect(Collectors.toMap(e -> e.jid, e -> e.problemJid));
+        return Lists.transform(submissionModels, m -> createSubmissionFromModel(m));
     }
 
     @Override
-    public List<String> getSubmissionJidsByFilter(String orderBy, String orderDir, String authorJid, String problemJid, String contestJid) {
+    public List<Submission> findSubmissionsWithoutGradingsByFilters(String orderBy, String orderDir, String authorJid, String problemJid, String contestJid) {
         ImmutableMap.Builder<String, String> filterColumnsBuilder = ImmutableMap.builder();
         if (authorJid != null) {
             filterColumnsBuilder.put("userCreate", authorJid);
@@ -136,9 +136,11 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
         }
 
         Map<String, String> filterColumns = filterColumnsBuilder.build();
+
+        long totalRowsCount = submissionDao.countByFilters("", filterColumns);
         List<SM> submissionModels = submissionDao.findSortedByFilters(orderBy, orderDir, "", filterColumns, 0, -1);
 
-        return Lists.transform(submissionModels, m -> m.jid);
+        return Lists.transform(submissionModels, m -> createSubmissionFromModel(m));
     }
 
     @Override
@@ -198,6 +200,10 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
         gradingModel.details = result.getDetailsAsJson();
 
         gradingDao.edit(gradingModel, grader, graderIpAddress);
+    }
+
+    private Submission createSubmissionFromModel(SM submissionModel) {
+        return createSubmissionFromModels(submissionModel, ImmutableList.of());
     }
 
     private Submission createSubmissionFromModels(SM submissionModel, List<GM> gradingModels) {

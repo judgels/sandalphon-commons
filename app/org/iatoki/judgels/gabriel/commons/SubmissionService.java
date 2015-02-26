@@ -16,9 +16,9 @@ public interface SubmissionService {
 
     List<Submission> findNewSubmissionsByContestJidByUsers(String contestJid, List<String> problemJids, List<String> userJids, long lastTime);
 
-    Map<String, String> getProblemJidMapBySubmissionJids(List<String> submissionJids);
+    List<Submission> findSubmissionsWithoutGradingsByJids(List<String> submissionJids);
 
-    List<String> getSubmissionJidsByFilter(String orderBy, String orderDir, String authorJid, String problemJid, String contestJid);
+    List<Submission> findSubmissionsWithoutGradingsByFilters(String orderBy, String orderDir, String authorJid, String problemJid, String contestJid);
 
     Page<Submission> pageSubmissions(long pageIndex, long pageSize, String orderBy, String orderDir, String authorJid, String problemJid, String contestJid);
 
