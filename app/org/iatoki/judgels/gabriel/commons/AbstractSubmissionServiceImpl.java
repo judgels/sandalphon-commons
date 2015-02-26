@@ -47,6 +47,11 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
     }
 
     @Override
+    public long countSubmissionsByContestJidByUser(String contestJid, String problemJid, String userJid) {
+        return submissionDao.countByContestJidAndUserJidAndProblemJid(contestJid, userJid, problemJid);
+    }
+
+    @Override
     public List<Submission> findAllSubmissionsByContestJid(String contestJid) {
         List<SM> submissionModels = submissionDao.findSortedByFilters("id", "asc", "", ImmutableMap.of("contestJid", contestJid), 0, -1);
         Map<String, List<GM>> gradingModelsMap = gradingDao.findGradingsForSubmissions(Lists.transform(submissionModels, m -> m.jid));
@@ -55,11 +60,11 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
     }
 
     @Override
-    public List<Submission> findNewSubmissionsByContestJidByContestants(String contestJid, List<String> problemJids, List<String> contestantJids, long lastTime) {
-        List<SM> allSubmissionModels = submissionDao.findByContestJidInContestantJidsAndProblemJids(contestJid, contestantJids, problemJids);
+    public List<Submission> findNewSubmissionsByContestJidByUsers(String contestJid, List<String> problemJids, List<String> userJids, long lastTime) {
+        List<SM> allSubmissionModels = submissionDao.findByContestJidInUserJidsAndProblemJids(contestJid, userJids, problemJids);
         Map<String, List<GM>> gradingModelsMap = gradingDao.findGradingsForSubmissionsSinceLastTime(Lists.transform(allSubmissionModels, m -> m.jid), lastTime);
         Map<String, List<GM>> finalGradingModelsMap = gradingDao.findGradingsForSubmissions(gradingModelsMap.keySet().stream().collect(Collectors.toList()));
-        List<SM> submissionModels = allSubmissionModels.stream().filter(s -> finalGradingModelsMap.containsKey(s)).collect(Collectors.toList());
+        List<SM> submissionModels = allSubmissionModels.stream().filter(s -> finalGradingModelsMap.containsKey(s.jid)).collect(Collectors.toList());
 
         List<Submission> tempResult = Lists.transform(submissionModels, m -> createSubmissionFromModels(m, finalGradingModelsMap.get(m.jid)));
 

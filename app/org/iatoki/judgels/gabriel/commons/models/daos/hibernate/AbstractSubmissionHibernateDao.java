@@ -17,8 +17,8 @@ public abstract class AbstractSubmissionHibernateDao<M extends AbstractSubmissio
     }
 
     @Override
-    public List<M> findByContestJidInContestantJidsAndProblemJids(String contestJid, List<String> contestantJids, List<String> problemJids) {
-        if (contestantJids.isEmpty() || problemJids.isEmpty()) {
+    public List<M> findByContestJidInUserJidsAndProblemJids(String contestJid, List<String> userJids, List<String> problemJids) {
+        if (userJids.isEmpty() || problemJids.isEmpty()) {
             return ImmutableList.of();
         }
 
@@ -26,8 +26,19 @@ public abstract class AbstractSubmissionHibernateDao<M extends AbstractSubmissio
         CriteriaQuery<M> query = cb.createQuery(getModelClass());
         Root<M> root = query.from(getModelClass());
 
-        query.where(cb.and(cb.equal(root.get("contestJid"), contestJid), root.get("userCreate").in(contestantJids), root.get("problemJid").in(problemJids)));
+        query.where(cb.and(cb.equal(root.get("contestJid"), contestJid), root.get("userCreate").in(userJids), root.get("problemJid").in(problemJids)));
 
         return JPA.em().createQuery(query).getResultList();
+    }
+
+    @Override
+    public long countByContestJidAndUserJidAndProblemJid(String contestJid, String userJid, String problemJid) {
+        CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<M> root = query.from(getModelClass());
+
+        query.select(cb.count(root)).where(cb.and(cb.equal(root.get("contestJid"), contestJid), cb.equal(root.get("userCreate"), userJid), cb.equal(root.get("problemJid"), problemJid)));
+
+        return JPA.em().createQuery(query).getSingleResult();
     }
 }
