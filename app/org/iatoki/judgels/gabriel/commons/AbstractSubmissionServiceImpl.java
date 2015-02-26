@@ -41,7 +41,7 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
     @Override
     public Submission findSubmissionById(long submissionId) {
         SM submissionModel = submissionDao.findById(submissionId);
-        List<GM> gradingModels = gradingDao.findSortedByFilters("id", "desc", "", ImmutableMap.of("submissionJid", submissionModel.jid), 0, -1);
+        List<GM> gradingModels = gradingDao.findSortedByFilters("id", "asc", "", ImmutableMap.of("submissionJid", submissionModel.jid), 0, -1);
 
         return createSubmissionFromModels(submissionModel, gradingModels);
     }
