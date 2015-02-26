@@ -6,6 +6,7 @@ import org.iatoki.judgels.gabriel.GradingSource;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface SubmissionService {
     Submission findSubmissionById(long submissionId);
@@ -13,6 +14,10 @@ public interface SubmissionService {
     List<Submission> findAllSubmissionsByContestJid(String contestJid);
 
     List<Submission> findNewSubmissionsByContestJidByContestants(String contestJid, List<String> problemJids, List<String> contestantJids, long lastTime);
+
+    Map<String, String> getProblemJidMapBySubmissionJids(List<String> submissionJids);
+
+    List<String> getSubmissionJidsByFilter(String orderBy, String orderDir, String authorJid, String problemJid, String contestJid);
 
     Page<Submission> pageSubmissions(long pageIndex, long pageSize, String orderBy, String orderDir, String authorJid, String problemJid, String contestJid);
 

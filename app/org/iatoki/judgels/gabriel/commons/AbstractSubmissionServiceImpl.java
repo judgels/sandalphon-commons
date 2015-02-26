@@ -111,6 +111,32 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
     }
 
     @Override
+    public Map<String, String> getProblemJidMapBySubmissionJids(List<String> submissionJids) {
+        List<SM> submissionModels = submissionDao.findByJids(submissionJids);
+
+        return submissionModels.stream().collect(Collectors.toMap(e -> e.jid, e -> e.problemJid));
+    }
+
+    @Override
+    public List<String> getSubmissionJidsByFilter(String orderBy, String orderDir, String authorJid, String problemJid, String contestJid) {
+        ImmutableMap.Builder<String, String> filterColumnsBuilder = ImmutableMap.builder();
+        if (authorJid != null) {
+            filterColumnsBuilder.put("userCreate", authorJid);
+        }
+        if (problemJid != null) {
+            filterColumnsBuilder.put("problemJid", problemJid);
+        }
+        if (contestJid != null) {
+            filterColumnsBuilder.put("contestJid", contestJid);
+        }
+
+        Map<String, String> filterColumns = filterColumnsBuilder.build();
+        List<SM> submissionModels = submissionDao.findSortedByFilters(orderBy, orderDir, "", filterColumns, 0, -1);
+
+        return Lists.transform(submissionModels, m -> m.jid);
+    }
+
+    @Override
     public Page<Submission> pageSubmissions(long pageIndex, long pageSize, String orderBy, String orderDir, String authorJid, String problemJid, String contestJid) {
         ImmutableMap.Builder<String, String> filterColumnsBuilder = ImmutableMap.builder();
         if (authorJid != null) {
@@ -145,7 +171,7 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
 
         submissionDao.persist(submissionModel, IdentityUtils.getUserJid(), IdentityUtils.getIpAddress());
 
-        requestGrading(submissionModel, gradingSource);
+        requestGrading(submissionModel, gradingSource, false);
 
         return submissionModel.jid;
     }
@@ -154,7 +180,7 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
     public void regrade(String submissionJid, GradingSource gradingSource) {
         SM submissionModel = submissionDao.findByJid(submissionJid);
 
-        requestGrading(submissionModel, gradingSource);
+        requestGrading(submissionModel, gradingSource, true);
     }
 
     @Override
@@ -179,7 +205,7 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
         return new Grading(gradingModel.id, gradingModel.jid, new Verdict(gradingModel.verdictCode, gradingModel.verdictName), gradingModel.score, gradingModel.details);
     }
 
-    private void requestGrading(SM submissionModel, GradingSource gradingSource) {
+    private void requestGrading(SM submissionModel, GradingSource gradingSource, boolean isRegrading) {
         GM gradingModel = gradingDao.createGradingModel();
 
         gradingModel.submissionJid = submissionModel.jid;
@@ -194,7 +220,11 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
         GradingRequest request = adapter.createGradingRequest(gradingModel.jid, submissionModel.problemJid, submissionModel.gradingEngine, submissionModel.gradingLanguage, gradingSource);
 
         try {
-            sealtiel.sendMessage(new ClientMessage(gabrielClientJid, request.getClass().getSimpleName(), new Gson().toJson(request)));
+            if (isRegrading) {
+                sealtiel.sendLowPriorityMessage(new ClientMessage(gabrielClientJid, request.getClass().getSimpleName(), new Gson().toJson(request)));
+            } else {
+                sealtiel.sendMessage(new ClientMessage(gabrielClientJid, request.getClass().getSimpleName(), new Gson().toJson(request)));
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
