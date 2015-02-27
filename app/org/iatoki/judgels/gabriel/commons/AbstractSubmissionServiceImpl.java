@@ -98,7 +98,7 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
         for (Submission submission : tempResult) {
             submissionBuilder.add(submission);
             if (submission.getGradings().size() > 1) {
-                for (SM sM : groupedSubmissionModels.get(submission.getProblemJid()).get(submission.getProblemJid())) {
+                for (SM sM : groupedSubmissionModels.get(submission.getProblemJid()).get(submission.getAuthorJid())) {
                     if (!groupedSubmissions.containsKey(sM.jid)) {
                         emptyGradingSubmissionModelBuilder.add(sM);
                     }
