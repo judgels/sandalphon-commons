@@ -26,5 +26,5 @@ public interface SubmissionService {
 
     void regrade(String submissionJid, GradingSource gradingSource);
 
-    void grade(String submissionJid, GradingResult result, String grader, String graderIpAddress);
+    void grade(String gradingJid, GradingResult result, String grader, String graderIpAddress);
 }
