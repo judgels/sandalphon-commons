@@ -6,6 +6,7 @@ import org.iatoki.judgels.sealtiel.client.Sealtiel;
 import play.db.jpa.JPA;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public final class GradingResponsePoller implements Runnable {
     private final SubmissionService submissionService;
@@ -19,8 +20,11 @@ public final class GradingResponsePoller implements Runnable {
     @Override
     public void run() {
         JPA.withTransaction(() -> {
-            ClientMessage message = sealtiel.fetchMessage();
-            processMessage(message);
+            if (GabrielUtils.getScoreboardLock().tryLock(10, TimeUnit.SECONDS)) {
+                ClientMessage message = sealtiel.fetchMessage();
+                processMessage(message);
+                GabrielUtils.getScoreboardLock().unlock();
+            }
         });
     }
 
