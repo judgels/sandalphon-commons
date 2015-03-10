@@ -75,4 +75,8 @@ public final class Submission {
     public String getLatestDetails() {
         return gradings.get(gradings.size() - 1).getDetails();
     }
+
+    public String getLatestGradingJid() {
+        return gradings.get(gradings.size() - 1).getJid();
+    }
 }
