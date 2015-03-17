@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissionModel, GM extends AbstractGradingModel> implements SubmissionService {
@@ -168,7 +169,11 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
     }
 
     @Override
-    public final String submit(String problemJid, String contestJid, String gradingEngine, String gradingLanguage, GradingSource gradingSource) {
+    public final String submit(String problemJid, String contestJid, String gradingEngine, String gradingLanguage, Set<String> allowedLanguageNames, GradingSource gradingSource) {
+        if (!allowedLanguageNames.contains(gradingLanguage)) {
+            throw new SubmissionException("Language " + gradingLanguage + " is not allowed ");
+        }
+
         SM submissionModel = submissionDao.createSubmissionModel();
 
         submissionModel.problemJid = problemJid;

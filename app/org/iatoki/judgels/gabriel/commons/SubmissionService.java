@@ -6,6 +6,7 @@ import org.iatoki.judgels.gabriel.GradingSource;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface SubmissionService {
     Submission findSubmissionById(long submissionId);
@@ -22,7 +23,7 @@ public interface SubmissionService {
 
     Page<Submission> pageSubmissions(long pageIndex, long pageSize, String orderBy, String orderDir, String authorJid, String problemJid, String contestJid);
 
-    String submit(String problemJid, String contestJid, String gradingEngine, String gradingLanguage, GradingSource gradingSource);
+    String submit(String problemJid, String contestJid, String gradingEngine, String gradingLanguage, Set<String> allowedLanguageNames, GradingSource gradingSource);
 
     void regrade(String submissionJid, GradingSource gradingSource);
 
