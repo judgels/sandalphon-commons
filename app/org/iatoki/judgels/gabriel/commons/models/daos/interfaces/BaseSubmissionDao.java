@@ -9,7 +9,7 @@ public interface BaseSubmissionDao<M extends AbstractSubmissionModel> extends Ju
 
     M createSubmissionModel();
 
-    List<M> findByContestJidInUserJidsAndProblemJids(String contestJid, List<String> userJids, List<String> problemJids);
+    List<M> findByContestJidSinceTime(String contestJid, long time);
 
     long countByContestJidAndUserJidAndProblemJid(String contestJid, String userJid, String problemJid);
 }

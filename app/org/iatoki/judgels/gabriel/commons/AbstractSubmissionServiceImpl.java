@@ -18,13 +18,10 @@ import org.iatoki.judgels.sealtiel.client.ClientMessage;
 import org.iatoki.judgels.sealtiel.client.Sealtiel;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissionModel, GM extends AbstractGradingModel> implements SubmissionService {
     private final BaseSubmissionDao<SM> submissionDao;
@@ -61,59 +58,11 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
     }
 
     @Override
-    public List<Submission> findNewSubmissionsByContestJidByUsers(String contestJid, List<String> problemJids, List<String> userJids, long lastTime) {
-        List<SM> allSubmissionModels = submissionDao.findByContestJidInUserJidsAndProblemJids(contestJid, userJids, problemJids);
-        Map<String, List<GM>> gradingModelsMap = gradingDao.findGradingsForSubmissionsSinceLastTime(Lists.transform(allSubmissionModels, m -> m.jid), lastTime);
-        Map<String, List<GM>> finalGradingModelsMap = gradingDao.findGradingsForSubmissions(gradingModelsMap.keySet().stream().collect(Collectors.toList()));
-        List<SM> submissionModels = allSubmissionModels.stream().filter(s -> finalGradingModelsMap.containsKey(s.jid)).collect(Collectors.toList());
+    public List<Submission> findAllSubmissionsByContestJidBeforeTime(String contestJid, long time) {
+        List<SM> submissionModels = submissionDao.findByContestJidSinceTime(contestJid, time);
+        Map<String, List<GM>> gradingModelsMap = gradingDao.findGradingsForSubmissions(Lists.transform(submissionModels, m -> m.jid));
 
-        List<Submission> tempResult = Lists.transform(submissionModels, m -> createSubmissionFromModels(m, finalGradingModelsMap.get(m.jid)));
-
-        Map<String, Map<String, List<SM>>> groupedSubmissionModels = new HashMap<>();
-        for (SM sM : allSubmissionModels) {
-            if (groupedSubmissionModels.containsKey(sM.problemJid)) {
-                if (groupedSubmissionModels.get(sM.problemJid).containsKey(sM.userCreate)) {
-                    groupedSubmissionModels.get(sM.problemJid).get(sM.userCreate).add(sM);
-                } else {
-                    List<SM> newList = new ArrayList<>();
-                    newList.add(sM);
-                    groupedSubmissionModels.get(sM.problemJid).put(sM.userCreate, newList);
-                }
-            } else {
-                Map<String, List<SM>> newMap = new HashMap<>();
-                List<SM> newList = new ArrayList<>();
-                newList.add(sM);
-                newMap.put(sM.userCreate, newList);
-                groupedSubmissionModels.put(sM.problemJid, newMap);
-            }
-        }
-
-        Map<String, Submission> groupedSubmissions = new HashMap<>();
-        for (Submission submission : tempResult) {
-            groupedSubmissions.put(submission.getJid(), submission);
-        }
-
-        ImmutableList.Builder<Submission> submissionBuilder = ImmutableList.builder();
-        ImmutableList.Builder<SM> emptyGradingSubmissionModelBuilder = ImmutableList.builder();
-
-        for (Submission submission : tempResult) {
-            submissionBuilder.add(submission);
-            if (submission.getGradings().size() > 1) {
-                for (SM sM : groupedSubmissionModels.get(submission.getProblemJid()).get(submission.getAuthorJid())) {
-                    if (!groupedSubmissions.containsKey(sM.jid)) {
-                        emptyGradingSubmissionModelBuilder.add(sM);
-                    }
-                }
-            }
-        }
-
-        Map<String, List<GM>> additionalGradingModelsMap = gradingDao.findGradingsForSubmissions(Lists.transform(emptyGradingSubmissionModelBuilder.build(), m -> m.jid));
-
-        List<SM> toBeAddedSubmissions = allSubmissionModels.stream().filter(s -> additionalGradingModelsMap.containsKey(s.jid)).collect(Collectors.toList());
-
-        submissionBuilder.addAll(Lists.transform(toBeAddedSubmissions, m -> createSubmissionFromModels(m, additionalGradingModelsMap.get(m.jid))));
-
-        return submissionBuilder.build();
+        return Lists.transform(submissionModels, m -> createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
     }
 
     @Override

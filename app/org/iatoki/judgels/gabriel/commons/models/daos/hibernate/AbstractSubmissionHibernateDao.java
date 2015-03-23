@@ -1,6 +1,5 @@
 package org.iatoki.judgels.gabriel.commons.models.daos.hibernate;
 
-import com.google.common.collect.ImmutableList;
 import org.iatoki.judgels.commons.models.daos.hibernate.AbstractJudgelsHibernateDao;
 import org.iatoki.judgels.gabriel.commons.models.daos.interfaces.BaseSubmissionDao;
 import org.iatoki.judgels.gabriel.commons.models.domains.AbstractSubmissionModel;
@@ -17,16 +16,12 @@ public abstract class AbstractSubmissionHibernateDao<M extends AbstractSubmissio
     }
 
     @Override
-    public List<M> findByContestJidInUserJidsAndProblemJids(String contestJid, List<String> userJids, List<String> problemJids) {
-        if (userJids.isEmpty() || problemJids.isEmpty()) {
-            return ImmutableList.of();
-        }
-
+    public List<M> findByContestJidSinceTime(String contestJid, long time) {
         CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
         CriteriaQuery<M> query = cb.createQuery(getModelClass());
         Root<M> root = query.from(getModelClass());
 
-        query.where(cb.and(cb.equal(root.get("contestJid"), contestJid), root.get("userCreate").in(userJids), root.get("problemJid").in(problemJids)));
+        query.where(cb.and(cb.equal(root.get("contestJid"), contestJid), cb.le(root.get("timeCreate"), time)));
 
         return JPA.em().createQuery(query).getResultList();
     }

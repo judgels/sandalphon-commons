@@ -5,7 +5,6 @@ import org.iatoki.judgels.gabriel.GradingResult;
 import org.iatoki.judgels.gabriel.GradingSource;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public interface SubmissionService {
@@ -15,7 +14,7 @@ public interface SubmissionService {
 
     List<Submission> findAllSubmissionsByContestJid(String contestJid);
 
-    List<Submission> findNewSubmissionsByContestJidByUsers(String contestJid, List<String> problemJids, List<String> userJids, long lastTime);
+    List<Submission> findAllSubmissionsByContestJidBeforeTime(String contestJid, long time);
 
     List<Submission> findSubmissionsWithoutGradingsByJids(List<String> submissionJids);
 
