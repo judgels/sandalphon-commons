@@ -1,6 +1,7 @@
 package org.iatoki.judgels.sandalphon.commons.programming;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import org.iatoki.judgels.gabriel.GradingLanguageRegistry;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public final class LanguageRestrictionAdapter {
     }
 
     public static Set<String> getFinalAllowedLanguageNames(List<LanguageRestriction> languageRestrictions) {
-        Set<String> result = GradingLanguageRegistry.getInstance().getGradingLanguages().keySet();
+        Set<String> result = Sets.newHashSet(GradingLanguageRegistry.getInstance().getGradingLanguages().keySet());
 
         for (LanguageRestriction languageRestriction : languageRestrictions) {
             if (!languageRestriction.isAllowedAll()) {
