@@ -56,7 +56,7 @@ public final class SandalphonUtils {
 
     public static URI getRenderImageUri(String problemJid, String imageName) {
         try {
-            return getEndpoint("problem/" + problemJid + "/render/" + imageName).toURL().toURI();
+            return getEndpoint("problems/" + problemJid + "/render/" + imageName).toURL().toURI();
         } catch (MalformedURLException | URISyntaxException e) {
             return null;
         }
