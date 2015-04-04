@@ -26,6 +26,7 @@ libraryDependencies ++= Seq(
   filters,
   cache,
   "commons-io" % "commons-io" % "2.4",
+  "com.ibm.icu" % "icu4j" % "55.1",
   "com.google.guava" % "guava" % "r05",
   "mysql" % "mysql-connector-java" % "5.1.26",
   "org.hibernate" % "hibernate-entitymanager" % "4.3.7.Final",

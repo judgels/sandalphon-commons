@@ -97,8 +97,8 @@ public final class SandalphonUtils {
         }
     }
 
-    public static URI getTOTPEndpoint(String problemJid, int tOTP, String lang, String postSubmitUri) {
-        return getEndpoint("totp/" + getClientJid() + "/" + problemJid + "/statement/" + tOTP + "/" + lang + "/" + URLEncoder.encode(postSubmitUri));
+    public static URI getTOTPEndpoint(String problemJid, int tOTP, String lang, String postSubmitUri, String switchLanguageUri) {
+        return getEndpoint("totp/" + getClientJid() + "/" + problemJid + "/statement/" + tOTP + "/" + lang + "/" + URLEncoder.encode(postSubmitUri) + "/" + URLEncoder.encode(switchLanguageUri));
     }
 
     public static URI getEndpoint(String service) {

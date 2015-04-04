@@ -1,6 +1,5 @@
 package org.iatoki.judgels.gabriel.commons;
 
-import org.iatoki.judgels.commons.AbstractJidCacheService;
 import org.iatoki.judgels.gabriel.GradingConfig;
 import org.iatoki.judgels.gabriel.GradingRequest;
 import org.iatoki.judgels.gabriel.GradingSource;
@@ -8,13 +7,15 @@ import play.mvc.Http;
 import play.twirl.api.Html;
 
 import java.io.File;
-import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 public interface SubmissionAdapter {
 
     //TODO: add CSRF token
-    Html renderViewStatement(String postSubmitUri, String name, String statement, GradingConfig config, String engine, Set<String> allowedLanguageNames);
+    Html renderViewStatement(String postSubmitUri, String name, String statement, GradingConfig config, String engine, Set<String> allowedGradingLanguageNames);
+
+    Html renderStatementLanguageSelection(String switchLanguageUri, List<String> allowedStatementLanguages, String currentStatementLanguage, Html statement);
 
     Html renderViewSubmission(Submission submission, GradingSource source, String authorName, String problemAlias, String problemName, String gradingLanguageName, String contestName);
 
