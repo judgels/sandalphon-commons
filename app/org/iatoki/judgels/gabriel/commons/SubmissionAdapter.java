@@ -7,7 +7,6 @@ import play.mvc.Http;
 import play.twirl.api.Html;
 
 import java.io.File;
-import java.util.List;
 import java.util.Set;
 
 public interface SubmissionAdapter {
@@ -15,7 +14,7 @@ public interface SubmissionAdapter {
     //TODO: add CSRF token
     Html renderViewStatement(String postSubmitUri, String name, String statement, GradingConfig config, String engine, Set<String> allowedGradingLanguageNames);
 
-    Html renderStatementLanguageSelection(String switchLanguageUri, List<String> allowedStatementLanguages, String currentStatementLanguage, Html statement);
+    Html renderStatementLanguageSelection(String switchLanguageUri, Set<String> allowedStatementLanguages, String currentStatementLanguage, Html statement);
 
     Html renderViewSubmission(Submission submission, GradingSource source, String authorName, String problemAlias, String problemName, String gradingLanguageName, String contestName);
 
