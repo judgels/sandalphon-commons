@@ -119,7 +119,7 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
 
     @Override
     public final String submit(String problemJid, String contestJid, String gradingEngine, String gradingLanguage, Set<String> allowedLanguageNames, GradingSource gradingSource) {
-        if (!allowedLanguageNames.contains(gradingLanguage)) {
+        if (allowedLanguageNames != null && !allowedLanguageNames.contains(gradingLanguage)) {
             throw new SubmissionException("Language " + gradingLanguage + " is not allowed ");
         }
 
