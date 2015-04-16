@@ -10,17 +10,23 @@ import java.io.IOException;
 public final class GradingResponsePoller implements Runnable {
     private final SubmissionService submissionService;
     private final Sealtiel sealtiel;
+    private final long interval;
 
-    public GradingResponsePoller(SubmissionService submissionService, Sealtiel sealtiel) {
+    public GradingResponsePoller(SubmissionService submissionService, Sealtiel sealtiel, long interval) {
         this.submissionService = submissionService;
         this.sealtiel = sealtiel;
+        this.interval = interval;
     }
 
     @Override
     public void run() {
+        long checkPoint = System.currentTimeMillis();
         JPA.withTransaction(() -> {
-            ClientMessage message = sealtiel.fetchMessage();
-            processMessage(message);
+            ClientMessage message;
+            do {
+                message = sealtiel.fetchMessage();
+                processMessage(message);
+            } while ((System.currentTimeMillis() - checkPoint < interval) && (message != null));
         });
     }
 
