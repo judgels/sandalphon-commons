@@ -37,7 +37,12 @@ public final class GradingResponsePoller implements Runnable {
 
         try {
             GradingResponse response = GradingResponses.parseFromJson(message.getMessageType(), message.getMessage());
-            submissionService.grade(response.getGradingJid(), response.getResult(), message.getSourceClientJid(), "localhost");
+
+            if (submissionService.gradingExists(response.getGradingJid())) {
+                submissionService.grade(response.getGradingJid(), response.getResult(), message.getSourceClientJid(), "localhost");
+            } else {
+                System.out.println("Grading JID " + response.getGradingJid() + " not found!");
+            }
             sealtiel.sendConfirmation(message.getId());
         } catch (BadGradingResponseException | IOException e) {
             System.out.println("Bad grading response: " + e.getMessage());

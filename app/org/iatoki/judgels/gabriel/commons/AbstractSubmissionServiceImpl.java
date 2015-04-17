@@ -156,6 +156,11 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
         gradingDao.edit(gradingModel, grader, graderIpAddress);
     }
 
+    @Override
+    public boolean gradingExists(String gradingJid) {
+        return gradingDao.existsByJid(gradingJid);
+    }
+
     private Submission createSubmissionFromModel(SM submissionModel) {
         return createSubmissionFromModels(submissionModel, ImmutableList.of());
     }
