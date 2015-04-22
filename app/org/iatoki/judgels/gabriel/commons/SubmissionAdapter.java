@@ -18,7 +18,7 @@ public interface SubmissionAdapter {
 
     Html renderViewSubmission(Submission submission, GradingSource source, String authorName, String problemAlias, String problemName, String gradingLanguageName, String contestName);
 
-    GradingSource createGradingSourceFromNewSubmission(Http.MultipartFormData body);
+    GradingSource createGradingSourceFromNewSubmission(Http.MultipartFormData body) throws SubmissionException;
 
     GradingSource createGradingSourceFromPastSubmission(File submissionBaseDir, String submissionJid);
 
