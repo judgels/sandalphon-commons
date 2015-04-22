@@ -22,9 +22,9 @@ public interface SubmissionService {
 
     Page<Submission> pageSubmissions(long pageIndex, long pageSize, String orderBy, String orderDir, String authorJid, String problemJid, String contestJid);
 
-    String submit(String problemJid, String contestJid, String gradingEngine, String gradingLanguage, Set<String> allowedLanguageNames, GradingSource gradingSource) throws SubmissionException;
+    String submit(String problemJid, String contestJid, String gradingEngine, String gradingLanguage, Set<String> allowedLanguageNames, GradingSource gradingSource, String userJid, String userIpAddress) throws SubmissionException;
 
-    void regrade(String submissionJid, GradingSource gradingSource);
+    void regrade(String submissionJid, GradingSource gradingSource, String userJid, String userIpAddress);
 
     void grade(String gradingJid, GradingResult result, String grader, String graderIpAddress);
 

@@ -118,7 +118,7 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
     }
 
     @Override
-    public final String submit(String problemJid, String contestJid, String gradingEngine, String gradingLanguage, Set<String> allowedLanguageNames, GradingSource gradingSource) throws SubmissionException {
+    public final String submit(String problemJid, String contestJid, String gradingEngine, String gradingLanguage, Set<String> allowedLanguageNames, GradingSource gradingSource, String userJid, String userIpAddress) throws SubmissionException {
         if (allowedLanguageNames != null && !allowedLanguageNames.contains(gradingLanguage)) {
             throw new SubmissionException("Language " + gradingLanguage + " is not allowed ");
         }
@@ -130,18 +130,18 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
         submissionModel.gradingEngine = gradingEngine;
         submissionModel.gradingLanguage = gradingLanguage;
 
-        submissionDao.persist(submissionModel, IdentityUtils.getUserJid(), IdentityUtils.getIpAddress());
+        submissionDao.persist(submissionModel, userJid, userIpAddress);
 
-        requestGrading(submissionModel, gradingSource, false);
+        requestGrading(submissionModel, gradingSource, false, userJid, userIpAddress);
 
         return submissionModel.jid;
     }
 
     @Override
-    public void regrade(String submissionJid, GradingSource gradingSource) {
+    public void regrade(String submissionJid, GradingSource gradingSource, String userJid, String userIpAddress) {
         SM submissionModel = submissionDao.findByJid(submissionJid);
 
-        requestGrading(submissionModel, gradingSource, true);
+        requestGrading(submissionModel, gradingSource, true, userJid, userIpAddress);
     }
 
     @Override
@@ -175,7 +175,7 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
         return new Grading(gradingModel.id, gradingModel.jid, new Verdict(gradingModel.verdictCode, gradingModel.verdictName), gradingModel.score, gradingModel.details);
     }
 
-    private void requestGrading(SM submissionModel, GradingSource gradingSource, boolean isRegrading) {
+    private void requestGrading(SM submissionModel, GradingSource gradingSource, boolean isRegrading, String userJid, String userIpAddress) {
         GM gradingModel = gradingDao.createGradingModel();
 
         gradingModel.submissionJid = submissionModel.jid;
@@ -183,7 +183,7 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
         gradingModel.verdictName = "Pending";
         gradingModel.score = 0;
 
-        gradingDao.persist(gradingModel, IdentityUtils.getUserJid(), IdentityUtils.getIpAddress());
+        gradingDao.persist(gradingModel, userJid, userIpAddress);
 
         SubmissionAdapter adapter = SubmissionAdapters.fromGradingEngine(submissionModel.gradingEngine);
 
