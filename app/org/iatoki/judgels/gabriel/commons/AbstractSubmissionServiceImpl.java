@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
-import org.iatoki.judgels.commons.IdentityUtils;
 import org.iatoki.judgels.commons.Page;
 import org.iatoki.judgels.gabriel.GradingRequest;
 import org.iatoki.judgels.gabriel.GradingResult;
@@ -37,7 +36,7 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
     }
 
     @Override
-    public Submission findSubmissionById(long submissionId) {
+    public Submission findSubmissionById(long submissionId) throws SubmissionNotFoundException {
         SM submissionModel = submissionDao.findById(submissionId);
         List<GM> gradingModels = gradingDao.findSortedByFilters("id", "asc", "", ImmutableMap.of("submissionJid", submissionModel.jid), 0, -1);
 

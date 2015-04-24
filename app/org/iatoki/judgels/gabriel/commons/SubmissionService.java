@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface SubmissionService {
-    Submission findSubmissionById(long submissionId);
+    Submission findSubmissionById(long submissionId) throws SubmissionNotFoundException;
 
     long countSubmissionsByContestJidByUser(String contestJid, String problemJid, String userJid);
 
