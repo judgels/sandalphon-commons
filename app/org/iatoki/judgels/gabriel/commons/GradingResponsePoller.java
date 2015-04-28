@@ -23,7 +23,7 @@ public final class GradingResponsePoller implements Runnable {
     public void run() {
         long checkPoint = System.currentTimeMillis();
         JPA.withTransaction(() -> {
-            ClientMessage message;
+            ClientMessage message = null;
             do {
                 try {
                     message = sealtiel.fetchMessage();
