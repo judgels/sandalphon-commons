@@ -25,8 +25,14 @@ public final class GradingResponsePoller implements Runnable {
         JPA.withTransaction(() -> {
             ClientMessage message;
             do {
-                message = sealtiel.fetchMessage();
-                processMessage(message);
+                try {
+                    message = sealtiel.fetchMessage();
+                    processMessage(message);
+                } catch (JsonSyntaxException e) {
+                    System.out.println("Bad grading response: " + e.getMessage());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             } while ((System.currentTimeMillis() - checkPoint < interval) && (message != null));
         });
     }
