@@ -18,6 +18,6 @@ public abstract class AbstractGradingModel extends AbstractJudgelsModel {
 
     public int score;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "LONGTEXT")
     public String details;
 }
