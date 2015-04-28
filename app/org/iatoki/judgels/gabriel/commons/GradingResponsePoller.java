@@ -1,5 +1,6 @@
 package org.iatoki.judgels.gabriel.commons;
 
+import com.google.gson.JsonSyntaxException;
 import org.iatoki.judgels.gabriel.GradingResponse;
 import org.iatoki.judgels.sealtiel.client.ClientMessage;
 import org.iatoki.judgels.sealtiel.client.Sealtiel;
@@ -44,7 +45,7 @@ public final class GradingResponsePoller implements Runnable {
                 System.out.println("Grading JID " + response.getGradingJid() + " not found!");
             }
             sealtiel.sendConfirmation(message.getId());
-        } catch (BadGradingResponseException | IOException e) {
+        } catch (BadGradingResponseException | IOException | JsonSyntaxException e) {
             System.out.println("Bad grading response: " + e.getMessage());
         }
     }
