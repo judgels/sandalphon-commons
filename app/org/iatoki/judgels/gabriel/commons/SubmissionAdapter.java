@@ -1,5 +1,6 @@
 package org.iatoki.judgels.gabriel.commons;
 
+import org.iatoki.judgels.commons.FileSystemProvider;
 import org.iatoki.judgels.gabriel.GradingConfig;
 import org.iatoki.judgels.gabriel.GradingRequest;
 import org.iatoki.judgels.gabriel.GradingSource;
@@ -20,9 +21,9 @@ public interface SubmissionAdapter {
 
     GradingSource createGradingSourceFromNewSubmission(Http.MultipartFormData body) throws SubmissionException;
 
-    GradingSource createGradingSourceFromPastSubmission(File submissionBaseDir, String submissionJid);
+    GradingSource createGradingSourceFromPastSubmission(FileSystemProvider fileSystemProvider, String submissionJid);
 
     GradingRequest createGradingRequest(String gradingJid, String problemJid, String gradingEngine, String gradingLanguage, GradingSource source);
 
-    void storeSubmissionFiles(File submissionBaseDir, String submissionJid, GradingSource source);
+    void storeSubmissionFiles(FileSystemProvider fileSystemProvider, String submissionJid, GradingSource source);
 }
