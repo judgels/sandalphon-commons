@@ -28,10 +28,9 @@ public final class GradingResponsePoller implements Runnable {
                 try {
                     message = sealtiel.fetchMessage();
                     processMessage(message);
-                } catch (JsonSyntaxException e) {
-                    System.out.println("Bad grading response: " + e.getMessage());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                } catch (JsonSyntaxException | IOException e) {
+                    System.out.println("Bad grading response!");
+                    e.printStackTrace();
                 }
             } while ((System.currentTimeMillis() - checkPoint < interval) && (message != null));
         });
@@ -52,7 +51,8 @@ public final class GradingResponsePoller implements Runnable {
             }
             sealtiel.sendConfirmation(message.getId());
         } catch (BadGradingResponseException | IOException | JsonSyntaxException e) {
-            System.out.println("Bad grading response: " + e.getMessage());
+            System.out.println("Bad grading response!");
+            e.printStackTrace();
         }
     }
 }
