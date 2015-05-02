@@ -21,9 +21,9 @@ public interface SubmissionAdapter {
 
     GradingSource createGradingSourceFromNewSubmission(Http.MultipartFormData body) throws SubmissionException;
 
-    GradingSource createGradingSourceFromPastSubmission(FileSystemProvider fileSystemProvider, String submissionJid);
+    GradingSource createGradingSourceFromPastSubmission(FileSystemProvider localFileSystemProvider, FileSystemProvider remoteFileSystemProvider, String submissionJid);
 
     GradingRequest createGradingRequest(String gradingJid, String problemJid, String gradingEngine, String gradingLanguage, GradingSource source);
 
-    void storeSubmissionFiles(FileSystemProvider fileSystemProvider, String submissionJid, GradingSource source);
+    void storeSubmissionFiles(FileSystemProvider localFileSystemProvider, FileSystemProvider remoteFileSystemProvider, String submissionJid, GradingSource source);
 }
