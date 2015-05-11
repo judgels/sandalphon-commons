@@ -1,19 +1,25 @@
 package org.iatoki.judgels.gabriel.commons;
 
+import akka.actor.Scheduler;
 import com.google.gson.JsonSyntaxException;
-import org.iatoki.judgels.gabriel.GradingResponse;
 import org.iatoki.judgels.sealtiel.client.ClientMessage;
 import org.iatoki.judgels.sealtiel.client.Sealtiel;
-import play.db.jpa.JPA;
+import scala.concurrent.ExecutionContext;
+import scala.concurrent.duration.Duration;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public final class GradingResponsePoller implements Runnable {
+    private final Scheduler scheduler;
+    private final ExecutionContext executor;
     private final SubmissionService submissionService;
     private final Sealtiel sealtiel;
     private final long interval;
 
-    public GradingResponsePoller(SubmissionService submissionService, Sealtiel sealtiel, long interval) {
+    public GradingResponsePoller(Scheduler scheduler, ExecutionContext executor, SubmissionService submissionService, Sealtiel sealtiel, long interval) {
+        this.scheduler = scheduler;
+        this.executor = executor;
         this.submissionService = submissionService;
         this.sealtiel = sealtiel;
         this.interval = interval;
@@ -22,37 +28,18 @@ public final class GradingResponsePoller implements Runnable {
     @Override
     public void run() {
         long checkPoint = System.currentTimeMillis();
-        JPA.withTransaction(() -> {
-            ClientMessage message = null;
-            do {
-                try {
-                    message = sealtiel.fetchMessage();
-                    processMessage(message);
-                } catch (JsonSyntaxException | IOException e) {
-                    System.out.println("Bad grading response!");
-                    e.printStackTrace();
+        ClientMessage message = null;
+        do {
+            try {
+                message = sealtiel.fetchMessage();
+                if (message != null) {
+                    MessageProcessor processor = new MessageProcessor(submissionService, sealtiel, message);
+                    scheduler.scheduleOnce(Duration.create(10, TimeUnit.MILLISECONDS), processor, executor);
                 }
-            } while ((System.currentTimeMillis() - checkPoint < interval) && (message != null));
-        });
-    }
-
-    private void processMessage(ClientMessage message) {
-        if (message == null) {
-            return;
-        }
-
-        try {
-            GradingResponse response = GradingResponses.parseFromJson(message.getMessageType(), message.getMessage());
-
-            if (submissionService.gradingExists(response.getGradingJid())) {
-                submissionService.grade(response.getGradingJid(), response.getResult(), message.getSourceClientJid(), "localhost");
-            } else {
-                System.out.println("Grading JID " + response.getGradingJid() + " not found!");
+            } catch (JsonSyntaxException | IOException e) {
+                System.out.println("Bad grading response!");
+                e.printStackTrace();
             }
-            sealtiel.sendConfirmation(message.getId());
-        } catch (BadGradingResponseException | IOException | JsonSyntaxException e) {
-            System.out.println("Bad grading response!");
-            e.printStackTrace();
-        }
+        } while ((System.currentTimeMillis() - checkPoint < interval) && (message != null));
     }
 }
