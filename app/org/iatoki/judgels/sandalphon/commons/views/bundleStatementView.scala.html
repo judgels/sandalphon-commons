@@ -1,0 +1,30 @@
+@(postSubmitUri: String, name: String, statement: String, itemsHtml: List[Html])
+
+@import play.i18n.Messages
+
+@if(play.mvc.Controller.flash("submissionError") != null) {
+    <div class="alert alert-danger" role="alert">@{play.mvc.Controller.flash("submissionError")}</div>
+}
+
+<h2 class="text-center">@name</h2>
+
+<p>&nbsp;</p>
+
+<div class="content-text">
+@Html(statement)
+</div>
+
+<hr />
+
+@implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-md-2", "col-md-10") }
+
+@b3.form(play.api.mvc.Call("POST", postSubmitUri), 'enctype->"multipart/form-data") {
+
+    <div class="content-text scrollable">
+        @for(itemHtml <- itemsHtml) {
+            @itemHtml
+        }
+    </div>
+
+    @b3.submit('class -> "btn btn-primary") { @Messages.get("Submit") }
+}

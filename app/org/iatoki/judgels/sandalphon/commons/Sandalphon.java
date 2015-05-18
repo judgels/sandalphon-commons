@@ -3,7 +3,6 @@ package org.iatoki.judgels.sandalphon.commons;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import play.Logger;
-import play.Play;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -15,34 +14,22 @@ import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-@Deprecated
-public final class SandalphonUtils {
+public final class Sandalphon implements BundleProblemGrader {
+    private final String clientJid;
+    private final String clientSecret;
+    private final String baseUrl;
 
-    private SandalphonUtils() {
-        // prevent instantiation
+    public Sandalphon(String clientJid, String clientSecret, String baseUrl) {
+        this.clientJid = clientJid;
+        this.clientSecret = clientSecret;
+        this.baseUrl = baseUrl;
     }
 
-    public static String getClientJid() {
-        String clientJid = Play.application().configuration().getString("sandalphon.clientJid");
-        if (clientJid == null) {
-            throw new IllegalStateException("sandalphon.clientJid not found in configuration");
-        }
-        return clientJid;
-    }
-
-    public static String getClientSecret() {
-        String clientSecret = Play.application().configuration().getString("sandalphon.clientSecret");
-        if (clientSecret == null) {
-            throw new IllegalStateException("sandalphon.clientSecret not found in configuration");
-        }
-        return clientSecret;
-    }
-
-    public static String verifyProblemJid(String problemJid) {
+    public String verifyProblemJid(String problemJid) {
         HTTPRequest httpRequest;
         try {
             httpRequest = new HTTPRequest(HTTPRequest.Method.GET, getEndpoint("verifyProblem").toURL());
-            httpRequest.setQuery("clientJid=" + getClientJid() + "&clientSecret=" + getClientSecret() + "&problemJid=" + problemJid);
+            httpRequest.setQuery("clientJid=" + clientJid + "&clientSecret=" + clientSecret + "&problemJid=" + problemJid);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
@@ -59,7 +46,7 @@ public final class SandalphonUtils {
         }
     }
 
-    public static URI getRenderImageUri(String problemJid, String imageName) {
+    public URI getRenderImageUri(String problemJid, String imageName) {
         try {
             return getEndpoint("problems/" + problemJid + "/render/" + imageName).toURL().toURI();
         } catch (MalformedURLException | URISyntaxException e) {
@@ -67,7 +54,12 @@ public final class SandalphonUtils {
         }
     }
 
-    public static int calculateTOTPCode(String keyString, long tm) {
+    @Override
+    public BundleGradingResult gradeBundleProblem(String problemJid, BundleAnswer bundleAnswer) throws IOException {
+        return null;
+    }
+
+    public int calculateTOTPCode(String keyString, long tm) {
         long totpMod = 1000000;
         long timeStep = 30000;
 
@@ -102,12 +94,11 @@ public final class SandalphonUtils {
         }
     }
 
-    public static URI getTOTPEndpoint(String problemJid, int tOTP, String lang, String postSubmitUri, String switchLanguageUri) {
-        return getEndpoint("totp/" + getClientJid() + "/" + problemJid + "/statement/" + tOTP + "/" + lang + "/" + URLEncoder.encode(postSubmitUri) + "/" + URLEncoder.encode(switchLanguageUri));
+    public URI getTOTPEndpoint(String problemJid, int tOTP, String lang, String postSubmitUri, String switchLanguageUri) {
+        return getEndpoint("totp/" + clientJid + "/" + problemJid + "/statement/" + tOTP + "/" + lang + "/" + URLEncoder.encode(postSubmitUri) + "/" + URLEncoder.encode(switchLanguageUri));
     }
 
-    public static URI getEndpoint(String service) {
-        String baseUrl = Play.application().configuration().getString("sandalphon.baseUrl");
+    public URI getEndpoint(String service) {
         if (baseUrl == null) {
             throw new IllegalStateException("sandalphon.baseUrl not found in configuration");
         }
