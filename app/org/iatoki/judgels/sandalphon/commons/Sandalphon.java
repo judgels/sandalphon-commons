@@ -25,6 +25,35 @@ public final class Sandalphon implements BundleProblemGrader {
         this.baseUrl = baseUrl;
     }
 
+    public String verifyLessonJid(String lessonJid) {
+        HTTPRequest httpRequest;
+        try {
+            httpRequest = new HTTPRequest(HTTPRequest.Method.GET, getEndpoint("verifyLesson").toURL());
+            httpRequest.setQuery("clientJid=" + clientJid + "&clientSecret=" + clientSecret + "&lessonJid=" + lessonJid);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            HTTPResponse httpResponse = httpRequest.send();
+            if (httpResponse.getStatusCode() == HTTPResponse.SC_OK) {
+                return httpResponse.getContent();
+            } else {
+                return null;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public URI getLessonRenderImageUri(String lessonJid, String imageName) {
+        try {
+            return getEndpoint("lessons/" + lessonJid + "/render/" + imageName).toURL().toURI();
+        } catch (MalformedURLException | URISyntaxException e) {
+            return null;
+        }
+    }
+
     public String verifyProblemJid(String problemJid) {
         HTTPRequest httpRequest;
         try {
@@ -46,7 +75,7 @@ public final class Sandalphon implements BundleProblemGrader {
         }
     }
 
-    public URI getRenderImageUri(String problemJid, String imageName) {
+    public URI getProblemRenderImageUri(String problemJid, String imageName) {
         try {
             return getEndpoint("problems/" + problemJid + "/render/" + imageName).toURL().toURI();
         } catch (MalformedURLException | URISyntaxException e) {
@@ -94,8 +123,12 @@ public final class Sandalphon implements BundleProblemGrader {
         }
     }
 
-    public URI getTOTPEndpoint(String problemJid, int tOTP, String lang, String postSubmitUri, String switchLanguageUri) {
-        return getEndpoint("totp/" + clientJid + "/" + problemJid + "/statement/" + tOTP + "/" + lang + "/" + URLEncoder.encode(postSubmitUri) + "/" + URLEncoder.encode(switchLanguageUri));
+    public URI getLessonTOTPEndpoint(String lessonJid, int tOTP, String lang, String switchLanguageUri) {
+        return getEndpoint("lesson/totp/" + clientJid + "/" + lessonJid + "/statement/" + tOTP + "/" + lang + "/" + URLEncoder.encode(switchLanguageUri));
+    }
+
+    public URI getProblemTOTPEndpoint(String problemJid, int tOTP, String lang, String postSubmitUri, String switchLanguageUri) {
+        return getEndpoint("problem/totp/" + clientJid + "/" + problemJid + "/statement/" + tOTP + "/" + lang + "/" + URLEncoder.encode(postSubmitUri) + "/" + URLEncoder.encode(switchLanguageUri));
     }
 
     public URI getEndpoint(String service) {
