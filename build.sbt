@@ -1,13 +1,13 @@
 import de.johoop.testngplugin.TestNGPlugin
 import de.johoop.jacoco4sbt.JacocoPlugin.jacoco
 
-lazy val frontendcommons = (project in file("."))
+lazy val sandalphoncommons = (project in file("."))
     .enablePlugins(PlayJava, SbtWeb)
     .disablePlugins(plugins.JUnitXmlReportPlugin)
     .dependsOn(playcommons, gabrielcommons)
     .aggregate(playcommons, gabrielcommons)
     .settings(
-        name := "frontendcommons",
+        name := "sandalphoncommons",
         version := IO.read(file("version.properties")).trim,
         scalaVersion := "2.11.1",
         libraryDependencies ++= Seq(
