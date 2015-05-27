@@ -46,7 +46,7 @@ public final class Sandalphon implements BundleProblemGrader {
         }
     }
 
-    public URI getLessonRenderImageUri(String lessonJid, String imageName) {
+    public URI getLessonRenderUri(String lessonJid, String imageName) {
         try {
             return getEndpoint("lessons/" + lessonJid + "/render/" + imageName).toURL().toURI();
         } catch (MalformedURLException | URISyntaxException e) {
@@ -75,7 +75,7 @@ public final class Sandalphon implements BundleProblemGrader {
         }
     }
 
-    public URI getProblemRenderImageUri(String problemJid, String imageName) {
+    public URI getProblemRenderUri(String problemJid, String imageName) {
         try {
             return getEndpoint("problems/" + problemJid + "/render/" + imageName).toURL().toURI();
         } catch (MalformedURLException | URISyntaxException e) {
