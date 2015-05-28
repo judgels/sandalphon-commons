@@ -1,4 +1,4 @@
-package org.iatoki.judgels.gabriel.commons;
+package org.iatoki.judgels.sandalphon.commons;
 
 import org.iatoki.judgels.commons.FileSystemProvider;
 import org.iatoki.judgels.gabriel.GradingConfig;
@@ -7,7 +7,6 @@ import org.iatoki.judgels.gabriel.GradingSource;
 import play.mvc.Http;
 import play.twirl.api.Html;
 
-import java.io.File;
 import java.util.Set;
 
 public interface SubmissionAdapter {

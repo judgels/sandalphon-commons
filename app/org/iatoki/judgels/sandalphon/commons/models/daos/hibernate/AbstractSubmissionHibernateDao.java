@@ -1,8 +1,8 @@
-package org.iatoki.judgels.gabriel.commons.models.daos.hibernate;
+package org.iatoki.judgels.sandalphon.commons.models.daos.hibernate;
 
 import org.iatoki.judgels.commons.models.daos.hibernate.AbstractJudgelsHibernateDao;
-import org.iatoki.judgels.gabriel.commons.models.daos.interfaces.BaseSubmissionDao;
-import org.iatoki.judgels.gabriel.commons.models.domains.AbstractSubmissionModel;
+import org.iatoki.judgels.sandalphon.commons.models.daos.interfaces.BaseSubmissionDao;
+import org.iatoki.judgels.sandalphon.commons.models.domains.AbstractSubmissionModel;
 import play.db.jpa.JPA;
 
 import javax.persistence.criteria.CriteriaBuilder;

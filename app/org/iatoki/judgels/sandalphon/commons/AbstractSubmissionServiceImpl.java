@@ -1,4 +1,4 @@
-package org.iatoki.judgels.gabriel.commons;
+package org.iatoki.judgels.sandalphon.commons;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -9,10 +9,10 @@ import org.iatoki.judgels.gabriel.GradingRequest;
 import org.iatoki.judgels.gabriel.GradingResult;
 import org.iatoki.judgels.gabriel.GradingSource;
 import org.iatoki.judgels.gabriel.Verdict;
-import org.iatoki.judgels.gabriel.commons.models.daos.interfaces.BaseGradingDao;
-import org.iatoki.judgels.gabriel.commons.models.daos.interfaces.BaseSubmissionDao;
-import org.iatoki.judgels.gabriel.commons.models.domains.AbstractGradingModel;
-import org.iatoki.judgels.gabriel.commons.models.domains.AbstractSubmissionModel;
+import org.iatoki.judgels.sandalphon.commons.models.daos.interfaces.BaseGradingDao;
+import org.iatoki.judgels.sandalphon.commons.models.daos.interfaces.BaseSubmissionDao;
+import org.iatoki.judgels.sandalphon.commons.models.domains.AbstractGradingModel;
+import org.iatoki.judgels.sandalphon.commons.models.domains.AbstractSubmissionModel;
 import org.iatoki.judgels.sealtiel.client.ClientMessage;
 import org.iatoki.judgels.sealtiel.client.Sealtiel;
 

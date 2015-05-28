@@ -1,7 +1,7 @@
-package org.iatoki.judgels.gabriel.commons.models.daos.interfaces;
+package org.iatoki.judgels.sandalphon.commons.models.daos.interfaces;
 
 import org.iatoki.judgels.commons.models.daos.interfaces.JudgelsDao;
-import org.iatoki.judgels.gabriel.commons.models.domains.AbstractSubmissionModel;
+import org.iatoki.judgels.sandalphon.commons.models.domains.AbstractSubmissionModel;
 
 import java.util.List;
 
