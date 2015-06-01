@@ -7,6 +7,7 @@ import play.Logger;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -124,11 +125,19 @@ public final class Sandalphon implements BundleProblemGrader {
     }
 
     public URI getLessonTOTPEndpoint(String lessonJid, int tOTP, String lang, String switchLanguageUri) {
-        return getEndpoint("lesson/totp/" + clientJid + "/" + lessonJid + "/statement/" + tOTP + "/" + lang + "/" + URLEncoder.encode(switchLanguageUri));
+        try {
+            return getEndpoint("lesson/totp/" + clientJid + "/" + lessonJid + "/statement/" + tOTP + "/" + lang + "/" + URLEncoder.encode(switchLanguageUri, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public URI getProblemTOTPEndpoint(String problemJid, int tOTP, String lang, String postSubmitUri, String switchLanguageUri) {
-        return getEndpoint("problem/totp/" + clientJid + "/" + problemJid + "/statement/" + tOTP + "/" + lang + "/" + URLEncoder.encode(postSubmitUri) + "/" + URLEncoder.encode(switchLanguageUri));
+        try {
+            return getEndpoint("problem/totp/" + clientJid + "/" + problemJid + "/statement/" + tOTP + "/" + lang + "/" + URLEncoder.encode(postSubmitUri, "UTF-8") + "/" + URLEncoder.encode(switchLanguageUri, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public URI getEndpoint(String service) {

@@ -8,6 +8,7 @@ import play.Play;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -61,8 +62,8 @@ public final class SandalphonUtils {
 
     public static URI getRenderImageUri(String problemJid, String imageName) {
         try {
-            return getEndpoint("problems/" + problemJid + "/render/" + imageName).toURL().toURI();
-        } catch (MalformedURLException | URISyntaxException e) {
+            return getEndpoint("problems/" + problemJid + "/render/" + URLEncoder.encode(imageName, "UTF-8").replaceAll("\\+", "%20")).toURL().toURI();
+        } catch (UnsupportedEncodingException | MalformedURLException | URISyntaxException e) {
             return null;
         }
     }
@@ -103,7 +104,11 @@ public final class SandalphonUtils {
     }
 
     public static URI getTOTPEndpoint(String problemJid, int tOTP, String lang, String postSubmitUri, String switchLanguageUri) {
-        return getEndpoint("problem/totp/" + getClientJid() + "/" + problemJid + "/statement/" + tOTP + "/" + lang + "/" + URLEncoder.encode(postSubmitUri) + "/" + URLEncoder.encode(switchLanguageUri));
+        try {
+            return getEndpoint("problem/totp/" + getClientJid() + "/" + problemJid + "/statement/" + tOTP + "/" + lang + "/" + URLEncoder.encode(postSubmitUri, "UTF-8") + "/" + URLEncoder.encode(switchLanguageUri, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static URI getEndpoint(String service) {
