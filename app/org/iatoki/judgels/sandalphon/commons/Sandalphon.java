@@ -16,14 +16,14 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 public final class Sandalphon implements BundleProblemGrader {
+    private final String baseUrl;
     private final String clientJid;
     private final String clientSecret;
-    private final String baseUrl;
 
-    public Sandalphon(String clientJid, String clientSecret, String baseUrl) {
+    public Sandalphon(String baseUrl, String clientJid, String clientSecret) {
+        this.baseUrl = baseUrl;
         this.clientJid = clientJid;
         this.clientSecret = clientSecret;
-        this.baseUrl = baseUrl;
     }
 
     public String verifyLessonJid(String lessonJid) {
@@ -49,8 +49,8 @@ public final class Sandalphon implements BundleProblemGrader {
 
     public URI getLessonRenderUri(String lessonJid, String imageName) {
         try {
-            return getEndpoint("lessons/" + lessonJid + "/render/" + imageName).toURL().toURI();
-        } catch (MalformedURLException | URISyntaxException e) {
+            return getEndpoint("lessons/" + lessonJid + "/render/" + URLEncoder.encode(imageName, "UTF-8").replaceAll("\\+", "%20")).toURL().toURI();
+        } catch (UnsupportedEncodingException | MalformedURLException | URISyntaxException e) {
             return null;
         }
     }
@@ -78,8 +78,8 @@ public final class Sandalphon implements BundleProblemGrader {
 
     public URI getProblemRenderUri(String problemJid, String imageName) {
         try {
-            return getEndpoint("problems/" + problemJid + "/render/" + imageName).toURL().toURI();
-        } catch (MalformedURLException | URISyntaxException e) {
+            return getEndpoint("problems/" + problemJid + "/render/" + URLEncoder.encode(imageName, "UTF-8").replaceAll("\\+", "%20")).toURL().toURI();
+        } catch (UnsupportedEncodingException | MalformedURLException | URISyntaxException e) {
             return null;
         }
     }
@@ -141,10 +141,6 @@ public final class Sandalphon implements BundleProblemGrader {
     }
 
     public URI getEndpoint(String service) {
-        if (baseUrl == null) {
-            throw new IllegalStateException("sandalphon.baseUrl not found in configuration");
-        }
-
         try {
             return new URI(baseUrl + "/" + service);
         } catch (URISyntaxException e) {
