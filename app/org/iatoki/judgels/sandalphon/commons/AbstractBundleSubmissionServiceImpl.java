@@ -183,13 +183,15 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
         try {
             BundleGradingResult bundleGradingResult = bundleProblemGrader.gradeBundleProblem(submissionModel.problemJid, answer);
 
-            GM gradingModel = gradingDao.createGradingModel();
+            if (bundleGradingResult != null) {
+                GM gradingModel = gradingDao.createGradingModel();
 
-            gradingModel.submissionJid = submissionModel.jid;
-            gradingModel.score = bundleGradingResult.getScore();
-            gradingModel.details = bundleGradingResult.getDetailsAsJson();
+                gradingModel.submissionJid = submissionModel.jid;
+                gradingModel.score = bundleGradingResult.getScore();
+                gradingModel.details = bundleGradingResult.getDetailsAsJson();
 
-            gradingDao.persist(gradingModel, userJid, userIpAddress);
+                gradingDao.persist(gradingModel, userJid, userIpAddress);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

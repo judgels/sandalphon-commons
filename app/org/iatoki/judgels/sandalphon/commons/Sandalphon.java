@@ -1,5 +1,6 @@
 package org.iatoki.judgels.sandalphon.commons;
 
+import com.google.gson.Gson;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import play.Logger;
@@ -86,7 +87,24 @@ public final class Sandalphon implements BundleProblemGrader {
 
     @Override
     public BundleGradingResult gradeBundleProblem(String problemJid, BundleAnswer bundleAnswer) throws IOException {
-        return null;
+        HTTPRequest httpRequest;
+        try {
+            httpRequest = new HTTPRequest(HTTPRequest.Method.POST, getEndpoint("problem/bundle/grade").toURL());
+            httpRequest.setQuery("clientJid=" + clientJid + "&clientSecret=" + clientSecret + "&problemJid=" + problemJid + "&answer=" + URLEncoder.encode(new Gson().toJson(bundleAnswer), "UTF-8"));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            HTTPResponse httpResponse = httpRequest.send();
+            if (httpResponse.getStatusCode() == HTTPResponse.SC_OK) {
+                return new Gson().fromJson(httpResponse.getContent(), BundleGradingResult.class);
+            } else {
+                return null;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public int calculateTOTPCode(String keyString, long tm) {
