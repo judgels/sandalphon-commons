@@ -1,4 +1,4 @@
-@(postSubmitUri: String, name: String, statement: String, itemsHtml: List[Html])
+@(postSubmitUri: String, name: String, statement: String, itemsHtml: List[Html], reasonNotAllowedToSubmit: String)
 
 @import play.i18n.Messages
 
@@ -18,13 +18,19 @@
 
 @implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-md-2", "col-md-10") }
 
-@b3.form(play.api.mvc.Call("POST", postSubmitUri), 'enctype->"multipart/form-data") {
+@if(reasonNotAllowedToSubmit != null) {
+    <div class="alert alert-danger" role="alert">@{reasonNotAllowedToSubmit}</div>
+} else {
+    @b3.form(play.api.mvc.Call("POST", postSubmitUri), 'enctype -> "multipart/form-data") {
 
-    <div class="content-text scrollable">
+        <div class="content-text scrollable">
         @for(itemHtml <- itemsHtml) {
             @itemHtml
         }
-    </div>
+        </div>
 
-    @b3.submit('class -> "btn btn-primary") { @Messages.get("Submit") }
+        @b3.submit('class -> "btn btn-primary") {
+            @Messages.get("Submit")
+        }
+    }
 }

@@ -3,6 +3,10 @@ package org.iatoki.judgels.sandalphon.commons;
 import com.google.gson.Gson;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
+import org.iatoki.judgels.sandalphon.commons.programming.LanguageRestriction;
 import play.Logger;
 
 import javax.crypto.Mac;
@@ -15,6 +19,8 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class Sandalphon implements BundleProblemGrader {
     private final String baseUrl;
@@ -142,20 +148,35 @@ public final class Sandalphon implements BundleProblemGrader {
         }
     }
 
-    public URI getLessonTOTPEndpoint(String lessonJid, int tOTP, String lang, String switchLanguageUri) {
-        try {
-            return getEndpoint("lesson/totp/" + clientJid + "/" + lessonJid + "/statement/" + tOTP + "/" + lang + "/" + URLEncoder.encode(switchLanguageUri, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+    public URI getLessonTOTPEndpoint() {
+        return getEndpoint("lesson/totp/statement");
     }
 
-    public URI getProblemTOTPEndpoint(String problemJid, int tOTP, String lang, String postSubmitUri, String switchLanguageUri) {
-        try {
-            return getEndpoint("problem/totp/" + clientJid + "/" + problemJid + "/statement/" + tOTP + "/" + lang + "/" + URLEncoder.encode(postSubmitUri, "UTF-8") + "/" + URLEncoder.encode(switchLanguageUri, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+    public String getLessonTOTPRequestBody(String lessonJid, int tOTP, String lang, String switchLanguageUri) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("clientJid", clientJid));
+        params.add(new BasicNameValuePair("lessonJid", lessonJid));
+        params.add(new BasicNameValuePair("TOTP", tOTP + ""));
+        params.add(new BasicNameValuePair("lang", lang));
+        params.add(new BasicNameValuePair("switchLanguageUri", switchLanguageUri));
+        return URLEncodedUtils.format(params, "UTF-8");
+    }
+
+    public URI getProblemTOTPEndpoint() {
+        return getEndpoint("problem/totp/statement");
+    }
+
+    public String getProblemTOTPRequestBody(String problemJid, int tOTP, String lang, String postSubmitUri, String switchLanguageUri, String reasonNotAllowedToSubmit, LanguageRestriction languageRestriction) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("clientJid", clientJid));
+        params.add(new BasicNameValuePair("problemJid", problemJid));
+        params.add(new BasicNameValuePair("TOTP", tOTP + ""));
+        params.add(new BasicNameValuePair("lang", lang));
+        params.add(new BasicNameValuePair("postSubmitUri", postSubmitUri));
+        params.add(new BasicNameValuePair("switchLanguageUri", switchLanguageUri));
+        params.add(new BasicNameValuePair("reasonNotAllowedToSubmit", reasonNotAllowedToSubmit));
+        params.add(new BasicNameValuePair("languageRestriction", new Gson().toJson(languageRestriction)));
+        return URLEncodedUtils.format(params, "UTF-8");
     }
 
     public URI getEndpoint(String service) {
