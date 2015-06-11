@@ -130,6 +130,11 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
     }
 
     @Override
+    public void afterGrade(String gradingJid, BundleAnswer answer) {
+        // To be overridden if needed
+    }
+
+    @Override
     public void storeSubmissionFiles(FileSystemProvider localFileSystemProvider, FileSystemProvider remoteFileSystemProvider, String submissionJid, BundleAnswer answer) {
         List<FileSystemProvider> fileSystemProviders = Lists.newArrayList(localFileSystemProvider);
         if (remoteFileSystemProvider != null) {
@@ -191,6 +196,8 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
                 gradingModel.details = bundleGradingResult.getDetailsAsJson();
 
                 gradingDao.persist(gradingModel, userJid, userIpAddress);
+
+                afterGrade(gradingModel.jid, answer);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -26,6 +26,8 @@ public interface BundleSubmissionService {
 
     void regrade(String submissionJid, BundleAnswer answer, String userJid, String userIpAddress);
 
+    void afterGrade(String gradingJid, BundleAnswer answer);
+
     void storeSubmissionFiles(FileSystemProvider localFileSystemProvider, FileSystemProvider remoteFileSystemProvider, String submissionJid, BundleAnswer answer);
 
     BundleAnswer createBundleAnswerFromNewSubmission(DynamicForm data, String languageCode);

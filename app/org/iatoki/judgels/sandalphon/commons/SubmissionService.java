@@ -28,5 +28,7 @@ public interface SubmissionService {
 
     void grade(String gradingJid, GradingResult result, String grader, String graderIpAddress);
 
+    void afterGrade(String gradingJid, GradingResult result);
+
     boolean gradingExists(String gradingJid);
 }

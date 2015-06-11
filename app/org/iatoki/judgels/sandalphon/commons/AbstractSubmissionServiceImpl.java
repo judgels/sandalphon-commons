@@ -153,6 +153,13 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
         gradingModel.details = result.getDetailsAsJson();
 
         gradingDao.edit(gradingModel, grader, graderIpAddress);
+
+        afterGrade(gradingJid, result);
+    }
+
+    @Override
+    public void afterGrade(String gradingJid, GradingResult result) {
+        // To be overridden if needed
     }
 
     @Override
