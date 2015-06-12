@@ -97,19 +97,12 @@ public final class Sandalphon implements BundleProblemGrader {
         }
     }
 
-    public URI getLessonRenderUri(String lessonJid, String mediaName) {
-        return getEndpoint("/lessons/" + lessonJid + "/render/" + mediaName);
-    }
-
-    public URI getProblemRenderUri(String problemJid, String mediaName) {
-        return getEndpoint("/problems/" + problemJid + "/render/" + mediaName);
-    }
-
-    public URI getLessonTOTPEndpoint() {
+    public URI getLessonStatementRenderUri() {
         return getEndpoint("/lesson/totp/statement");
     }
 
-    public String getLessonTOTPRequestBody(String lessonJid, int tOTP, String lang, String switchLanguageUri) {
+    public String getLessonStatementRenderRequestBody(String lessonJid, String lessonSecret, long currentMillis, String lang, String switchLanguageUri) {
+        int tOTP = calculateTOTPCode(lessonSecret, currentMillis);
         List<NameValuePair> params = ImmutableList.of(
               new BasicNameValuePair("clientJid", clientJid),
               new BasicNameValuePair("lessonJid", lessonJid),
@@ -120,11 +113,16 @@ public final class Sandalphon implements BundleProblemGrader {
         return URLEncodedUtils.format(params, ENCODING);
     }
 
-    public URI getProblemTOTPEndpoint() {
+    public URI getLessonMediaRenderUri(String lessonJid, String mediaName) {
+        return getEndpoint("/lessons/" + lessonJid + "/render/" + mediaName);
+    }
+
+    public URI getProblemStatementRenderUri() {
         return getEndpoint("/problem/totp/statement");
     }
 
-    public String getProblemTOTPRequestBody(String problemJid, int tOTP, String lang, String postSubmitUri, String switchLanguageUri, String reasonNotAllowedToSubmit, LanguageRestriction languageRestriction) {
+    public String getProblemStatementRenderRequestBody(String problemJid, String problemSecret, long currentMillis, String lang, String postSubmitUri, String switchLanguageUri, String reasonNotAllowedToSubmit, LanguageRestriction languageRestriction) {
+        int tOTP = calculateTOTPCode(problemSecret, currentMillis);
         List<NameValuePair> params = ImmutableList.of(
               new BasicNameValuePair("clientJid", clientJid),
               new BasicNameValuePair("problemJid", problemJid),
@@ -138,13 +136,33 @@ public final class Sandalphon implements BundleProblemGrader {
         return URLEncodedUtils.format(params, ENCODING);
     }
 
-    public int calculateTOTPCode(String keyString, long tm) {
+    public URI getProblemMediaRenderUri(String problemJid, String mediaName) {
+        return getEndpoint("/problems/" + problemJid + "/render/" + mediaName);
+    }
+
+    private URI getEndpoint(String path) {
+        return getEndpoint(path, ImmutableList.of());
+    }
+
+    private URI getEndpoint(String path, List<NameValuePair> params) {
+        try {
+            URIBuilder uriBuilder = new URIBuilder(baseUrl);
+            uriBuilder.setPath(path);
+            uriBuilder.setParameters(params);
+
+            return uriBuilder.build();
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException("sandalphon.baseUrl malformed in configuration");
+        }
+    }
+
+    private int calculateTOTPCode(String keyString, long timeMillis) {
         long totpMod = 1000000;
         long timeStep = 30000;
 
         byte[] key = keyString.getBytes();
         byte[] data = new byte[8];
-        long value = tm / timeStep;
+        long value = timeMillis / timeStep;
 
         for(int signKey = 8; signKey-- > 0; value >>>= 8) {
             data[signKey] = (byte)((int)value);
@@ -167,24 +185,8 @@ public final class Sandalphon implements BundleProblemGrader {
             truncatedHash &= 2147483647L;
             truncatedHash %= totpMod;
             return (int)truncatedHash;
-        } catch (InvalidKeyException | NoSuchAlgorithmException var14) {
-            throw new RuntimeException("The operation cannot be performed now.");
-        }
-    }
-
-    private URI getEndpoint(String path) {
-        return getEndpoint(path, ImmutableList.of());
-    }
-
-    private URI getEndpoint(String path, List<NameValuePair> params) {
-        try {
-            URIBuilder uriBuilder = new URIBuilder(baseUrl);
-            uriBuilder.setPath(path);
-            uriBuilder.setParameters(params);
-
-            return uriBuilder.build();
-        } catch (URISyntaxException e) {
-            throw new IllegalStateException("sandalphon.baseUrl malformed in configuration");
+        } catch (InvalidKeyException | NoSuchAlgorithmException e) {
+            throw new RuntimeException("The operation cannot be performed now.", e);
         }
     }
 }
