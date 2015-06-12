@@ -1,28 +1,33 @@
 package org.iatoki.judgels.sandalphon.commons;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
-import com.nimbusds.oauth2.sdk.http.HTTPRequest;
-import com.nimbusds.oauth2.sdk.http.HTTPResponse;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.iatoki.judgels.sandalphon.commons.programming.LanguageRestriction;
-import play.Logger;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.List;
 
 public final class Sandalphon implements BundleProblemGrader {
+
+    private static final String ENCODING= "UTF-8";
+    private static final String TOTP_ENCRYPTION_ALGORITHM =  "HmacSHA1";
+
     private final String baseUrl;
     private final String clientJid;
     private final String clientSecret;
@@ -33,84 +38,104 @@ public final class Sandalphon implements BundleProblemGrader {
         this.clientSecret = clientSecret;
     }
 
-    public String verifyLessonJid(String lessonJid) {
-        HTTPRequest httpRequest;
-        try {
-            httpRequest = new HTTPRequest(HTTPRequest.Method.GET, getEndpoint("verifyLesson").toURL());
-            httpRequest.setQuery("clientJid=" + clientJid + "&clientSecret=" + clientSecret + "&lessonJid=" + lessonJid);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
+    public String verifyLessonJid(String lessonJid) throws IOException {
+        HttpClient httpClient = HttpClientBuilder.create().build();
 
-        try {
-            HTTPResponse httpResponse = httpRequest.send();
-            if (httpResponse.getStatusCode() == HTTPResponse.SC_OK) {
-                return httpResponse.getContent();
-            } else {
-                return null;
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+        List<NameValuePair> params = ImmutableList.of(
+              new BasicNameValuePair("clientJid", clientJid),
+              new BasicNameValuePair("clientSecret", clientSecret),
+              new BasicNameValuePair("lessonJid", lessonJid)
+        );
 
-    public URI getLessonRenderUri(String lessonJid, String imageName) {
-        try {
-            return getEndpoint("lessons/" + lessonJid + "/render/" + URLEncoder.encode(imageName, "UTF-8").replaceAll("\\+", "%20")).toURL().toURI();
-        } catch (UnsupportedEncodingException | MalformedURLException | URISyntaxException e) {
+        HttpGet request = new HttpGet(getEndpoint("/verifyLesson", params));
+
+        HttpResponse response = httpClient.execute(request);
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            return IOUtils.toString(response.getEntity().getContent());
+        } else {
             return null;
         }
     }
 
-    public String verifyProblemJid(String problemJid) {
-        HTTPRequest httpRequest;
-        try {
-            httpRequest = new HTTPRequest(HTTPRequest.Method.GET, getEndpoint("verifyProblem").toURL());
-            httpRequest.setQuery("clientJid=" + clientJid + "&clientSecret=" + clientSecret + "&problemJid=" + problemJid);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
+    public String verifyProblemJid(String problemJid) throws IOException {
+        HttpClient httpClient = HttpClientBuilder.create().build();
 
-        try {
-            HTTPResponse httpResponse = httpRequest.send();
-            if (httpResponse.getStatusCode() == HTTPResponse.SC_OK) {
-                return httpResponse.getContent();
-            } else {
-                return null;
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+        List<NameValuePair> params = ImmutableList.of(
+              new BasicNameValuePair("clientJid", clientJid),
+              new BasicNameValuePair("clientSecret", clientSecret),
+              new BasicNameValuePair("problemJid", problemJid)
+        );
 
-    public URI getProblemRenderUri(String problemJid, String imageName) {
-        try {
-            return getEndpoint("problems/" + problemJid + "/render/" + URLEncoder.encode(imageName, "UTF-8").replaceAll("\\+", "%20")).toURL().toURI();
-        } catch (UnsupportedEncodingException | MalformedURLException | URISyntaxException e) {
+        HttpGet request = new HttpGet(getEndpoint("/verifyProblem", params));
+
+        HttpResponse response = httpClient.execute(request);
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            return IOUtils.toString(response.getEntity().getContent());
+        } else {
             return null;
         }
     }
 
     @Override
     public BundleGradingResult gradeBundleProblem(String problemJid, BundleAnswer bundleAnswer) throws IOException {
-        HTTPRequest httpRequest;
-        try {
-            httpRequest = new HTTPRequest(HTTPRequest.Method.POST, getEndpoint("problem/bundle/grade").toURL());
-            httpRequest.setQuery("clientJid=" + clientJid + "&clientSecret=" + clientSecret + "&problemJid=" + problemJid + "&answer=" + URLEncoder.encode(new Gson().toJson(bundleAnswer), "UTF-8"));
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
+        HttpClient httpClient = HttpClientBuilder.create().build();
 
-        try {
-            HTTPResponse httpResponse = httpRequest.send();
-            if (httpResponse.getStatusCode() == HTTPResponse.SC_OK) {
-                return new Gson().fromJson(httpResponse.getContent(), BundleGradingResult.class);
-            } else {
-                return null;
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        List<NameValuePair> params = ImmutableList.of(
+                new BasicNameValuePair("clientJid", clientJid),
+                new BasicNameValuePair("clientSecret", clientSecret),
+                new BasicNameValuePair("problemJid", problemJid),
+                new BasicNameValuePair("answer", new Gson().toJson(bundleAnswer))
+        );
+
+        HttpGet request = new HttpGet(getEndpoint("/problem/bundle/grade", params));
+
+        HttpResponse response = httpClient.execute(request);
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            return new Gson().fromJson(IOUtils.toString(response.getEntity().getContent()), BundleGradingResult.class);
+        } else {
+            return null;
         }
+    }
+
+    public URI getLessonRenderUri(String lessonJid, String mediaName) {
+        return getEndpoint("/lessons/" + lessonJid + "/render/" + mediaName);
+    }
+
+    public URI getProblemRenderUri(String problemJid, String mediaName) {
+        return getEndpoint("/problems/" + problemJid + "/render/" + mediaName);
+    }
+
+    public URI getLessonTOTPEndpoint() {
+        return getEndpoint("/lesson/totp/statement");
+    }
+
+    public String getLessonTOTPRequestBody(String lessonJid, int tOTP, String lang, String switchLanguageUri) {
+        List<NameValuePair> params = ImmutableList.of(
+              new BasicNameValuePair("clientJid", clientJid),
+              new BasicNameValuePair("lessonJid", lessonJid),
+              new BasicNameValuePair("TOTP", tOTP + ""),
+              new BasicNameValuePair("lang", lang),
+              new BasicNameValuePair("switchLanguageUri", switchLanguageUri)
+        );
+        return URLEncodedUtils.format(params, ENCODING);
+    }
+
+    public URI getProblemTOTPEndpoint() {
+        return getEndpoint("/problem/totp/statement");
+    }
+
+    public String getProblemTOTPRequestBody(String problemJid, int tOTP, String lang, String postSubmitUri, String switchLanguageUri, String reasonNotAllowedToSubmit, LanguageRestriction languageRestriction) {
+        List<NameValuePair> params = ImmutableList.of(
+              new BasicNameValuePair("clientJid", clientJid),
+              new BasicNameValuePair("problemJid", problemJid),
+              new BasicNameValuePair("TOTP", tOTP + ""),
+              new BasicNameValuePair("lang", lang),
+              new BasicNameValuePair("postSubmitUri", postSubmitUri),
+              new BasicNameValuePair("switchLanguageUri", switchLanguageUri),
+              new BasicNameValuePair("reasonNotAllowedToSubmit", reasonNotAllowedToSubmit),
+              new BasicNameValuePair("languageRestriction", new Gson().toJson(languageRestriction))
+        );
+        return URLEncodedUtils.format(params, ENCODING);
     }
 
     public int calculateTOTPCode(String keyString, long tm) {
@@ -125,10 +150,10 @@ public final class Sandalphon implements BundleProblemGrader {
             data[signKey] = (byte)((int)value);
         }
 
-        SecretKeySpec var15 = new SecretKeySpec(key, "HmacSHA1");
+        SecretKeySpec var15 = new SecretKeySpec(key, TOTP_ENCRYPTION_ALGORITHM);
 
         try {
-            Mac ex = Mac.getInstance("HmacSHA1");
+            Mac ex = Mac.getInstance(TOTP_ENCRYPTION_ALGORITHM);
             ex.init(var15);
             byte[] hash = ex.doFinal(data);
             int offset = hash[hash.length - 1] & 15;
@@ -143,45 +168,21 @@ public final class Sandalphon implements BundleProblemGrader {
             truncatedHash %= totpMod;
             return (int)truncatedHash;
         } catch (InvalidKeyException | NoSuchAlgorithmException var14) {
-            Logger.warn(var14.getMessage(), var14);
             throw new RuntimeException("The operation cannot be performed now.");
         }
     }
 
-    public URI getLessonTOTPEndpoint() {
-        return getEndpoint("lesson/totp/statement");
+    private URI getEndpoint(String path) {
+        return getEndpoint(path, ImmutableList.of());
     }
 
-    public String getLessonTOTPRequestBody(String lessonJid, int tOTP, String lang, String switchLanguageUri) {
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("clientJid", clientJid));
-        params.add(new BasicNameValuePair("lessonJid", lessonJid));
-        params.add(new BasicNameValuePair("TOTP", tOTP + ""));
-        params.add(new BasicNameValuePair("lang", lang));
-        params.add(new BasicNameValuePair("switchLanguageUri", switchLanguageUri));
-        return URLEncodedUtils.format(params, "UTF-8");
-    }
-
-    public URI getProblemTOTPEndpoint() {
-        return getEndpoint("problem/totp/statement");
-    }
-
-    public String getProblemTOTPRequestBody(String problemJid, int tOTP, String lang, String postSubmitUri, String switchLanguageUri, String reasonNotAllowedToSubmit, LanguageRestriction languageRestriction) {
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("clientJid", clientJid));
-        params.add(new BasicNameValuePair("problemJid", problemJid));
-        params.add(new BasicNameValuePair("TOTP", tOTP + ""));
-        params.add(new BasicNameValuePair("lang", lang));
-        params.add(new BasicNameValuePair("postSubmitUri", postSubmitUri));
-        params.add(new BasicNameValuePair("switchLanguageUri", switchLanguageUri));
-        params.add(new BasicNameValuePair("reasonNotAllowedToSubmit", reasonNotAllowedToSubmit));
-        params.add(new BasicNameValuePair("languageRestriction", new Gson().toJson(languageRestriction)));
-        return URLEncodedUtils.format(params, "UTF-8");
-    }
-
-    public URI getEndpoint(String service) {
+    private URI getEndpoint(String path, List<NameValuePair> params) {
         try {
-            return new URI(baseUrl + "/" + service);
+            URIBuilder uriBuilder = new URIBuilder(baseUrl);
+            uriBuilder.setPath(path);
+            uriBuilder.setParameters(params);
+
+            return uriBuilder.build();
         } catch (URISyntaxException e) {
             throw new IllegalStateException("sandalphon.baseUrl malformed in configuration");
         }
