@@ -7,7 +7,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -87,7 +89,8 @@ public final class Sandalphon implements BundleProblemGrader {
                 new BasicNameValuePair("answer", new Gson().toJson(bundleAnswer))
         );
 
-        HttpGet request = new HttpGet(getEndpoint("/problem/bundle/grade", params));
+        HttpPost request = new HttpPost(getEndpoint("/problem/bundle/grade"));
+        request.setEntity(new UrlEncodedFormEntity(params));
 
         HttpResponse response = httpClient.execute(request);
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
@@ -141,14 +144,16 @@ public final class Sandalphon implements BundleProblemGrader {
     }
 
     private URI getEndpoint(String path) {
-        return getEndpoint(path, ImmutableList.of());
+        return getEndpoint(path, null);
     }
 
     private URI getEndpoint(String path, List<NameValuePair> params) {
         try {
             URIBuilder uriBuilder = new URIBuilder(baseUrl);
             uriBuilder.setPath(path);
-            uriBuilder.setParameters(params);
+            if (params != null) {
+                uriBuilder.setParameters(params);
+            }
 
             return uriBuilder.build();
         } catch (URISyntaxException e) {
