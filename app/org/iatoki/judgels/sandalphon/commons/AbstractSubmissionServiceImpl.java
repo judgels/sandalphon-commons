@@ -13,8 +13,8 @@ import org.iatoki.judgels.sandalphon.commons.models.daos.interfaces.BaseGradingD
 import org.iatoki.judgels.sandalphon.commons.models.daos.interfaces.BaseSubmissionDao;
 import org.iatoki.judgels.sandalphon.commons.models.domains.AbstractGradingModel;
 import org.iatoki.judgels.sandalphon.commons.models.domains.AbstractSubmissionModel;
-import org.iatoki.judgels.sealtiel.client.ClientMessage;
-import org.iatoki.judgels.sealtiel.client.Sealtiel;
+import org.iatoki.judgels.sealtiel.ClientMessage;
+import org.iatoki.judgels.sealtiel.Sealtiel;
 
 import java.io.IOException;
 import java.util.Date;

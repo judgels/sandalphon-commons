@@ -2,8 +2,8 @@ package org.iatoki.judgels.sandalphon.commons;
 
 import akka.actor.Scheduler;
 import com.google.gson.JsonSyntaxException;
-import org.iatoki.judgels.sealtiel.client.ClientMessage;
-import org.iatoki.judgels.sealtiel.client.Sealtiel;
+import org.iatoki.judgels.sealtiel.ClientMessage;
+import org.iatoki.judgels.sealtiel.Sealtiel;
 import scala.concurrent.ExecutionContext;
 import scala.concurrent.duration.Duration;
 

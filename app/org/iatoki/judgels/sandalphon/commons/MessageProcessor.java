@@ -2,8 +2,8 @@ package org.iatoki.judgels.sandalphon.commons;
 
 import com.google.gson.JsonSyntaxException;
 import org.iatoki.judgels.gabriel.GradingResponse;
-import org.iatoki.judgels.sealtiel.client.ClientMessage;
-import org.iatoki.judgels.sealtiel.client.Sealtiel;
+import org.iatoki.judgels.sealtiel.ClientMessage;
+import org.iatoki.judgels.sealtiel.Sealtiel;
 import play.db.jpa.JPA;
 
 import java.io.IOException;
