@@ -14,6 +14,8 @@ public interface BundleSubmissionService {
 
     List<BundleSubmission> findAllSubmissionsByContestJid(String contestJid);
 
+    List<BundleSubmission> findAllSubmissionsByContestJidAndProblemJid(String contestJid, String problemJid);
+
     List<BundleSubmission> findAllSubmissionsByContestJidBeforeTime(String contestJid, long time);
 
     List<BundleSubmission> findSubmissionsWithoutGradingsByJids(List<String> submissionJids);

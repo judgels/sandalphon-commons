@@ -57,6 +57,14 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
     }
 
     @Override
+    public List<Submission> findAllSubmissionsByContestJidAndProblemJid(String contestJid, String problemJid) {
+        List<SM> submissionModels = submissionDao.findSortedByFilters("id", "asc", "", ImmutableMap.of("contestJid", contestJid, "problemJid", problemJid), 0, -1);
+        Map<String, List<GM>> gradingModelsMap = gradingDao.findGradingsForSubmissions(Lists.transform(submissionModels, m -> m.jid));
+
+        return Lists.transform(submissionModels, m -> createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
+    }
+
+    @Override
     public List<Submission> findAllSubmissionsByContestJidBeforeTime(String contestJid, long time) {
         List<SM> submissionModels = submissionDao.findByContestJidSinceTime(contestJid, time);
         Map<String, List<GM>> gradingModelsMap = gradingDao.findGradingsForSubmissions(Lists.transform(submissionModels, m -> m.jid));
