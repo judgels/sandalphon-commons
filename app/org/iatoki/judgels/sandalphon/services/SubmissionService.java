@@ -17,7 +17,7 @@ public interface SubmissionService {
 
     List<Submission> findAllSubmissionsByContestJid(String contestJid);
 
-    List<Submission> findAllSubmissionsByContestJidAndProblemJid(String contestJid, String problemJid);
+    List<Submission> findAllSubmissionsByContestJidProblemJidAndUserJid(String contestJid, String problemJid, String userJid);
 
     List<Submission> findAllSubmissionsByContestJidBeforeTime(String contestJid, long time);
 
