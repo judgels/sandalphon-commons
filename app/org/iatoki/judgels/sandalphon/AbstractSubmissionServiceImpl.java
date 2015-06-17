@@ -9,10 +9,10 @@ import org.iatoki.judgels.gabriel.GradingRequest;
 import org.iatoki.judgels.gabriel.GradingResult;
 import org.iatoki.judgels.gabriel.GradingSource;
 import org.iatoki.judgels.gabriel.Verdict;
-import org.iatoki.judgels.sandalphon.models.daos.interfaces.BaseGradingDao;
-import org.iatoki.judgels.sandalphon.models.daos.interfaces.BaseSubmissionDao;
-import org.iatoki.judgels.sandalphon.models.domains.AbstractGradingModel;
-import org.iatoki.judgels.sandalphon.models.domains.AbstractSubmissionModel;
+import org.iatoki.judgels.sandalphon.models.daos.BaseGradingDao;
+import org.iatoki.judgels.sandalphon.models.daos.BaseSubmissionDao;
+import org.iatoki.judgels.sandalphon.models.entities.AbstractGradingModel;
+import org.iatoki.judgels.sandalphon.models.entities.AbstractSubmissionModel;
 import org.iatoki.judgels.sealtiel.ClientMessage;
 import org.iatoki.judgels.sealtiel.Sealtiel;
 

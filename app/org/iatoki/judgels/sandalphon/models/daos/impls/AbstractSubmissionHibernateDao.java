@@ -1,8 +1,8 @@
-package org.iatoki.judgels.sandalphon.models.daos.hibernate;
+package org.iatoki.judgels.sandalphon.models.daos.impls;
 
 import org.iatoki.judgels.commons.models.daos.hibernate.AbstractJudgelsHibernateDao;
-import org.iatoki.judgels.sandalphon.models.daos.interfaces.BaseBundleSubmissionDao;
-import org.iatoki.judgels.sandalphon.models.domains.AbstractBundleSubmissionModel;
+import org.iatoki.judgels.sandalphon.models.daos.BaseSubmissionDao;
+import org.iatoki.judgels.sandalphon.models.entities.AbstractSubmissionModel;
 import play.db.jpa.JPA;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -10,8 +10,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-public abstract class AbstractBundleSubmissionHibernateDao<M extends AbstractBundleSubmissionModel> extends AbstractJudgelsHibernateDao<M> implements BaseBundleSubmissionDao<M> {
-    protected AbstractBundleSubmissionHibernateDao(Class<M> modelClass) {
+public abstract class AbstractSubmissionHibernateDao<M extends AbstractSubmissionModel> extends AbstractJudgelsHibernateDao<M> implements BaseSubmissionDao<M> {
+    protected AbstractSubmissionHibernateDao(Class<M> modelClass) {
         super(modelClass);
     }
 

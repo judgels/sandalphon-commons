@@ -6,10 +6,10 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import org.iatoki.judgels.commons.FileSystemProvider;
 import org.iatoki.judgels.commons.Page;
-import org.iatoki.judgels.sandalphon.models.daos.interfaces.BaseBundleGradingDao;
-import org.iatoki.judgels.sandalphon.models.daos.interfaces.BaseBundleSubmissionDao;
-import org.iatoki.judgels.sandalphon.models.domains.AbstractBundleGradingModel;
-import org.iatoki.judgels.sandalphon.models.domains.AbstractBundleSubmissionModel;
+import org.iatoki.judgels.sandalphon.models.daos.BaseBundleGradingDao;
+import org.iatoki.judgels.sandalphon.models.daos.BaseBundleSubmissionDao;
+import org.iatoki.judgels.sandalphon.models.entities.AbstractBundleGradingModel;
+import org.iatoki.judgels.sandalphon.models.entities.AbstractBundleSubmissionModel;
 import play.data.DynamicForm;
 
 import java.io.IOException;

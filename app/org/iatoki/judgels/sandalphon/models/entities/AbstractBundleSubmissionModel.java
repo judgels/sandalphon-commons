@@ -1,4 +1,4 @@
-package org.iatoki.judgels.sandalphon.models.domains;
+package org.iatoki.judgels.sandalphon.models.entities;
 
 import org.iatoki.judgels.commons.models.JidPrefix;
 import org.iatoki.judgels.commons.models.domains.AbstractJudgelsModel;
