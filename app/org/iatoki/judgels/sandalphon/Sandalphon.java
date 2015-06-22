@@ -2,89 +2,69 @@ package org.iatoki.judgels.sandalphon;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.iatoki.judgels.AbstractJudgelsClient;
 import org.iatoki.judgels.sandalphon.programming.LanguageRestriction;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-public final class Sandalphon implements BundleProblemGrader {
+public final class Sandalphon extends AbstractJudgelsClient implements BundleProblemGrader {
 
     private static final String ENCODING= "UTF-8";
     private static final String TOTP_ENCRYPTION_ALGORITHM =  "HmacSHA1";
 
-    private final String baseUrl;
     private final String clientJid;
-    private final String clientSecret;
 
     public Sandalphon(String baseUrl, String clientJid, String clientSecret) {
-        this.baseUrl = baseUrl;
+        super(baseUrl, clientJid, clientSecret);
         this.clientJid = clientJid;
-        this.clientSecret = clientSecret;
     }
 
     public String verifyLessonJid(String lessonJid) throws IOException {
-        HttpClient httpClient = HttpClientBuilder.create().build();
+        CloseableHttpClient httpClient = getHttpClient();
 
         List<NameValuePair> params = ImmutableList.of(
-              new BasicNameValuePair("clientJid", clientJid),
-              new BasicNameValuePair("clientSecret", clientSecret),
               new BasicNameValuePair("lessonJid", lessonJid)
         );
 
         HttpGet request = new HttpGet(getEndpoint("/verifyLesson", params));
 
-        HttpResponse response = httpClient.execute(request);
-        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-            return IOUtils.toString(response.getEntity().getContent());
-        } else {
-            return null;
-        }
+        String result = executeHttpRequest(httpClient, request);
+
+        return result;
     }
 
     public String verifyProblemJid(String problemJid) throws IOException {
-        HttpClient httpClient = HttpClientBuilder.create().build();
+        CloseableHttpClient httpClient = getHttpClient();
 
         List<NameValuePair> params = ImmutableList.of(
-              new BasicNameValuePair("clientJid", clientJid),
-              new BasicNameValuePair("clientSecret", clientSecret),
               new BasicNameValuePair("problemJid", problemJid)
         );
 
         HttpGet request = new HttpGet(getEndpoint("/verifyProblem", params));
 
-        HttpResponse response = httpClient.execute(request);
-        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-            return IOUtils.toString(response.getEntity().getContent());
-        } else {
-            return null;
-        }
+        String result = executeHttpRequest(httpClient, request);
+
+        return result;
     }
 
     @Override
     public BundleGradingResult gradeBundleProblem(String problemJid, BundleAnswer bundleAnswer) throws IOException {
-        HttpClient httpClient = HttpClientBuilder.create().build();
+        CloseableHttpClient httpClient = getHttpClient();
 
         List<NameValuePair> params = ImmutableList.of(
-                new BasicNameValuePair("clientJid", clientJid),
-                new BasicNameValuePair("clientSecret", clientSecret),
                 new BasicNameValuePair("problemJid", problemJid),
                 new BasicNameValuePair("answer", new Gson().toJson(bundleAnswer))
         );
@@ -92,12 +72,13 @@ public final class Sandalphon implements BundleProblemGrader {
         HttpPost request = new HttpPost(getEndpoint("/problem/bundle/grade"));
         request.setEntity(new UrlEncodedFormEntity(params));
 
-        HttpResponse response = httpClient.execute(request);
-        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-            return new Gson().fromJson(IOUtils.toString(response.getEntity().getContent()), BundleGradingResult.class);
-        } else {
-            return null;
+        BundleGradingResult gradingResult = null;
+        String result = executeHttpRequest(httpClient, request);
+        if (result != null) {
+            gradingResult = new Gson().fromJson(result, BundleGradingResult.class);
         }
+
+        return gradingResult;
     }
 
     public URI getLessonStatementRenderUri() {
@@ -143,24 +124,6 @@ public final class Sandalphon implements BundleProblemGrader {
         return getEndpoint("/problems/" + problemJid + "/render/" + mediaName);
     }
 
-    private URI getEndpoint(String path) {
-        return getEndpoint(path, null);
-    }
-
-    private URI getEndpoint(String path, List<NameValuePair> params) {
-        try {
-            URIBuilder uriBuilder = new URIBuilder(baseUrl);
-            uriBuilder.setPath(path);
-            if (params != null) {
-                uriBuilder.setParameters(params);
-            }
-
-            return uriBuilder.build();
-        } catch (URISyntaxException e) {
-            throw new IllegalStateException("sandalphon.baseUrl malformed in configuration");
-        }
-    }
-
     private int calculateTOTPCode(String keyString, long timeMillis) {
         long totpMod = 1000000;
         long timeStep = 30000;
@@ -193,5 +156,10 @@ public final class Sandalphon implements BundleProblemGrader {
         } catch (InvalidKeyException | NoSuchAlgorithmException e) {
             throw new RuntimeException("The operation cannot be performed now.", e);
         }
+    }
+
+    @Override
+    protected String getClientName() {
+        return "Sandalphon";
     }
 }
