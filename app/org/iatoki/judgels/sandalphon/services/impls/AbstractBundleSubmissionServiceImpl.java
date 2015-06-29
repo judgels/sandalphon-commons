@@ -9,7 +9,7 @@ import org.iatoki.judgels.commons.Page;
 import org.iatoki.judgels.sandalphon.BundleAnswer;
 import org.iatoki.judgels.sandalphon.BundleGrading;
 import org.iatoki.judgels.sandalphon.BundleGradingResult;
-import org.iatoki.judgels.sandalphon.BundleProblemGrader;
+import org.iatoki.judgels.sandalphon.services.BundleProblemGrader;
 import org.iatoki.judgels.sandalphon.BundleSubmission;
 import org.iatoki.judgels.sandalphon.BundleSubmissionNotFoundException;
 import org.iatoki.judgels.sandalphon.models.daos.BaseBundleGradingDao;
