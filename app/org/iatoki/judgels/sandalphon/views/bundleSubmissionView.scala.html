@@ -1,4 +1,4 @@
-@(submission: org.iatoki.judgels.sandalphon.BundleSubmission, gradingResult: Map[String, Double], bundleAnswer: org.iatoki.judgels.sandalphon.BundleAnswer, authorName: String, problemAlias: String, problemName: String, contestName: String)
+@(submission: org.iatoki.judgels.sandalphon.BundleSubmission, gradingResult: Map[String, org.iatoki.judgels.sandalphon.BundleDetailResult], bundleAnswer: org.iatoki.judgels.sandalphon.BundleAnswer, authorName: String, problemAlias: String, problemName: String, contestName: String)
 
 @import org.iatoki.judgels.commons.JudgelsUtils
 @import java.text.DecimalFormat
@@ -52,17 +52,19 @@
             <table class="table table-condensed">
                 <thead>
                     <tr>
-                        <th class="col-md-4">Jid</th>
+                        <th class="col-md-4">Number</th>
+                        <th class="col-md-4">Answer</th>
                         <th class="col-md-2">Score</th>
-                        <th class="col-md-6"></th>
+                        <th class="col-md-2"></th>
                     </tr>
                 </thead>
 
                 <tbody>
-                @for((jid, score) <- gradingResult) {
+                @for((jid, detailResult) <- gradingResult) {
                     <tr>
-                        <td>@jid</td>
-                        <td>@(new DecimalFormat("#.##").format(score))</td>
+                        <td>@detailResult.getNumber</td>
+                        <td>@bundleAnswer.getAnswers.get(jid)</td>
+                        <td>@(new DecimalFormat("#.##").format(detailResult.getScore))</td>
                         <td></td>
                     </tr>
                 }
@@ -71,28 +73,3 @@
         </div>
     </div>
 }
-
-<h4>Answers</h4>
-<div class="panel panel-default">
-    <div class="panel-body">
-        <table class="table table-condensed">
-            <thead>
-                <tr>
-                    <th class="col-md-4">Jid</th>
-                    <th class="col-md-4">Answer</th>
-                    <th class="col-md-4"></th>
-                </tr>
-            </thead>
-
-            <tbody>
-            @for((jid, answer) <- bundleAnswer.getAnswers) {
-                <tr>
-                    <td>@jid</td>
-                    <td>@answer</td>
-                    <td></td>
-                </tr>
-            }
-            </tbody>
-        </table>
-    </div>
-</div>

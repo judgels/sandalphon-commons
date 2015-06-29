@@ -3,6 +3,7 @@ package org.iatoki.judgels.sandalphon;
 import java.util.Map;
 
 public final class BundleAnswer {
+
     private final Map<String, String> answers;
     private final String languageCode;
 

@@ -5,10 +5,11 @@ import com.google.gson.Gson;
 import java.util.Map;
 
 public final class BundleGradingResult {
-    private final double score;
-    private final Map<String, Double> details;
 
-    public BundleGradingResult(double score, Map<String, Double> details) {
+    private final double score;
+    private final Map<String, BundleDetailResult> details;
+
+    public BundleGradingResult(double score, Map<String, BundleDetailResult> details) {
         this.score = score;
         this.details = details;
     }
@@ -17,7 +18,7 @@ public final class BundleGradingResult {
         return score;
     }
 
-    public Map<String, Double> getDetails() {
+    public Map<String, BundleDetailResult> getDetails() {
         return details;
     }
 
