@@ -21,11 +21,9 @@
 @if(reasonNotAllowedToSubmit != null) {
     @b3.form(play.api.mvc.Call("POST", ""), 'enctype -> "multipart/form-data") {
 
-        <div class="content-text scrollable">
         @for(itemHtml <- itemsHtml) {
             @itemHtml
         }
-        </div>
         <br />
 
         <div class="alert alert-danger" role="alert">@{reasonNotAllowedToSubmit}</div>
@@ -33,11 +31,9 @@
 } else {
     @b3.form(play.api.mvc.Call("POST", postSubmitUri), 'enctype -> "multipart/form-data") {
 
-        <div class="content-text scrollable">
         @for(itemHtml <- itemsHtml) {
             @itemHtml
         }
-        </div>
 
         @b3.submit('class -> "btn btn-primary") {
             @Messages.get("Submit")
