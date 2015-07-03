@@ -9,13 +9,14 @@ lazy val sandalphoncommons = (project in file("."))
     .settings(
         name := "sandalphoncommons",
         version := IO.read(file("version.properties")).trim,
-        scalaVersion := "2.11.1",
+        scalaVersion := "2.11.7",
         libraryDependencies ++= Seq(
             "com.ibm.icu" % "icu4j" % "55.1",
             "org.webjars" % "ckeditor" % "4.4.1",
             "org.webjars" % "prettify" % "4-Mar-2013",
             "com.warrenstrange" % "googleauth" % "0.4.3"
-        )
+        ),
+        routesGenerator := InjectedRoutesGenerator
     )
     .settings(TestNGPlugin.testNGSettings: _*)
     .settings(
