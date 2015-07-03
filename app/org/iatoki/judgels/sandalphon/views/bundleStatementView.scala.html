@@ -6,6 +6,10 @@
     <div class="alert alert-danger" role="alert">@{play.mvc.Controller.flash("submissionError")}</div>
 }
 
+@if(reasonNotAllowedToSubmit != null) {
+    <div class="alert alert-danger" role="alert">@{reasonNotAllowedToSubmit}</div>
+}
+
 <h2 class="text-center">@name</h2>
 
 <p>&nbsp;</p>
@@ -24,9 +28,6 @@
         @for(itemHtml <- itemsHtml) {
             @itemHtml
         }
-        <br />
-
-        <div class="alert alert-danger" role="alert">@{reasonNotAllowedToSubmit}</div>
     }
 } else {
     @b3.form(play.api.mvc.Call("POST", postSubmitUri), 'enctype -> "multipart/form-data") {
