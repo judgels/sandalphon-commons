@@ -23,7 +23,7 @@
 @implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-md-2", "col-md-10") }
 
 @if(reasonNotAllowedToSubmit != null) {
-    @b3.form(play.api.mvc.Call("POST", ""), 'enctype -> "multipart/form-data") {
+    @b3.form(play.api.mvc.Call("POST", "../../../../../../../../../judgels-play-commons/public"), 'enctype -> "multipart/form-data") {
 
         @for(itemHtml <- itemsHtml) {
             @itemHtml

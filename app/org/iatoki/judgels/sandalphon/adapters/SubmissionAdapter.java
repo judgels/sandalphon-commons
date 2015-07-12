@@ -1,9 +1,11 @@
-package org.iatoki.judgels.sandalphon;
+package org.iatoki.judgels.sandalphon.adapters;
 
 import org.iatoki.judgels.FileSystemProvider;
 import org.iatoki.judgels.gabriel.GradingConfig;
 import org.iatoki.judgels.gabriel.GradingRequest;
 import org.iatoki.judgels.gabriel.GradingSource;
+import org.iatoki.judgels.sandalphon.Submission;
+import org.iatoki.judgels.sandalphon.SubmissionException;
 import play.mvc.Http;
 import play.twirl.api.Html;
 

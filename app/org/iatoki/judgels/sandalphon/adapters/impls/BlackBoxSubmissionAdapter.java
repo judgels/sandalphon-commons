@@ -1,4 +1,4 @@
-package org.iatoki.judgels.sandalphon;
+package org.iatoki.judgels.sandalphon.adapters.impls;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -7,8 +7,11 @@ import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
 import org.iatoki.judgels.FileInfo;
 import org.iatoki.judgels.FileSystemProvider;
-import org.iatoki.judgels.sandalphon.views.html.blackBoxViewSubmissionView;
-import org.iatoki.judgels.sandalphon.views.html.blackBoxViewStatementView;
+import org.iatoki.judgels.sandalphon.Submission;
+import org.iatoki.judgels.sandalphon.SubmissionException;
+import org.iatoki.judgels.sandalphon.adapters.SubmissionAdapter;
+import org.iatoki.judgels.sandalphon.views.html.problem.programming.submission.blackBoxViewSubmissionView;
+import org.iatoki.judgels.sandalphon.views.html.problem.programming.statement.blackBoxViewStatementView;
 import org.iatoki.judgels.gabriel.GradingConfig;
 import org.iatoki.judgels.gabriel.GradingRequest;
 import org.iatoki.judgels.gabriel.GradingSource;
