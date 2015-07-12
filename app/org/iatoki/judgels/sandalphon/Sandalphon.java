@@ -10,7 +10,6 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.iatoki.judgels.AbstractJudgelsClient;
-import org.iatoki.judgels.sandalphon.programming.LanguageRestriction;
 import org.iatoki.judgels.sandalphon.services.BundleProblemGrader;
 
 import javax.crypto.Mac;
