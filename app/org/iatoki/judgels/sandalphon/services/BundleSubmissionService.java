@@ -1,7 +1,7 @@
 package org.iatoki.judgels.sandalphon.services;
 
-import org.iatoki.judgels.commons.FileSystemProvider;
-import org.iatoki.judgels.commons.Page;
+import org.iatoki.judgels.FileSystemProvider;
+import org.iatoki.judgels.play.Page;
 import org.iatoki.judgels.sandalphon.BundleAnswer;
 import org.iatoki.judgels.sandalphon.BundleSubmission;
 import org.iatoki.judgels.sandalphon.BundleSubmissionNotFoundException;

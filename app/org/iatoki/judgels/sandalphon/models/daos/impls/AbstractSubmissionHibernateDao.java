@@ -1,6 +1,6 @@
 package org.iatoki.judgels.sandalphon.models.daos.impls;
 
-import org.iatoki.judgels.commons.models.daos.hibernate.AbstractJudgelsHibernateDao;
+import org.iatoki.judgels.play.models.daos.hibernate.AbstractJudgelsHibernateDao;
 import org.iatoki.judgels.sandalphon.models.daos.BaseSubmissionDao;
 import org.iatoki.judgels.sandalphon.models.entities.AbstractSubmissionModel;
 import play.db.jpa.JPA;

@@ -1,6 +1,6 @@
 package org.iatoki.judgels.sandalphon;
 
-import org.iatoki.judgels.commons.FileSystemProvider;
+import org.iatoki.judgels.FileSystemProvider;
 import org.iatoki.judgels.gabriel.GradingConfig;
 import org.iatoki.judgels.gabriel.GradingRequest;
 import org.iatoki.judgels.gabriel.GradingSource;

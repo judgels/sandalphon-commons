@@ -3,7 +3,7 @@ package org.iatoki.judgels.sandalphon.models.daos.impls;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.iatoki.judgels.commons.models.daos.hibernate.AbstractJudgelsHibernateDao;
+import org.iatoki.judgels.play.models.daos.hibernate.AbstractJudgelsHibernateDao;
 import org.iatoki.judgels.sandalphon.models.daos.BaseGradingDao;
 import org.iatoki.judgels.sandalphon.models.entities.AbstractGradingModel;
 import play.db.jpa.JPA;
