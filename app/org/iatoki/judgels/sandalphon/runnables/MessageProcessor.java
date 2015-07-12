@@ -1,7 +1,9 @@
-package org.iatoki.judgels.sandalphon;
+package org.iatoki.judgels.sandalphon.runnables;
 
 import com.google.gson.JsonSyntaxException;
 import org.iatoki.judgels.gabriel.GradingResponse;
+import org.iatoki.judgels.sandalphon.BadGradingResponseException;
+import org.iatoki.judgels.sandalphon.GradingResponses;
 import org.iatoki.judgels.sandalphon.services.SubmissionService;
 import org.iatoki.judgels.sealtiel.ClientMessage;
 import org.iatoki.judgels.sealtiel.Sealtiel;

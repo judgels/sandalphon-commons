@@ -1,4 +1,4 @@
-package org.iatoki.judgels.sandalphon;
+package org.iatoki.judgels.sandalphon.runnables;
 
 import akka.actor.Scheduler;
 import com.google.gson.JsonSyntaxException;
