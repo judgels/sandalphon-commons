@@ -1,0 +1,43 @@
+@(postSubmitUri: String, name: String, statement: String, itemsHtml: List[Html], reasonNotAllowedToSubmit: String)
+
+@import play.i18n.Messages
+
+@if(play.mvc.Controller.flash("submissionError") != null) {
+    <div class="alert alert-danger" role="alert">@{play.mvc.Controller.flash("submissionError")}</div>
+}
+
+@if(reasonNotAllowedToSubmit != null) {
+    <div class="alert alert-danger" role="alert">@{reasonNotAllowedToSubmit}</div>
+}
+
+<h2 class="text-center">@name</h2>
+
+<p>&nbsp;</p>
+
+<div class="content-text">
+@Html(statement)
+</div>
+
+<hr />
+
+@implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-md-2", "col-md-10") }
+
+@if(reasonNotAllowedToSubmit != null) {
+    @b3.form(play.api.mvc.Call("POST", "../../../../../../../../../judgels-play-commons/public"), 'enctype -> "multipart/form-data") {
+
+        @for(itemHtml <- itemsHtml) {
+            @itemHtml
+        }
+    }
+} else {
+    @b3.form(play.api.mvc.Call("POST", postSubmitUri), 'enctype -> "multipart/form-data") {
+
+        @for(itemHtml <- itemsHtml) {
+            @itemHtml
+        }
+
+        @b3.submit('class -> "btn btn-primary") {
+            @Messages.get("Submit")
+        }
+    }
+}
