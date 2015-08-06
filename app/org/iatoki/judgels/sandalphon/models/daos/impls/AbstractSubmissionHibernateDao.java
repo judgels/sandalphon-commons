@@ -27,6 +27,17 @@ public abstract class AbstractSubmissionHibernateDao<M extends AbstractSubmissio
     }
 
     @Override
+    public List<M> findByContestJidAndUserJidAndProblemJid(String contestJid, String userJid, String problemJid) {
+        CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
+        CriteriaQuery<M> query = cb.createQuery(getModelClass());
+        Root<M> root = query.from(getModelClass());
+
+        query.where(cb.and(cb.equal(root.get("contestJid"), contestJid), cb.equal(root.get("userCreate"), userJid), cb.equal(root.get("problemJid"), problemJid)));
+
+        return JPA.em().createQuery(query).getResultList();
+    }
+
+    @Override
     public long countByContestJidAndUserJidAndProblemJid(String contestJid, String userJid, String problemJid) {
         CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
