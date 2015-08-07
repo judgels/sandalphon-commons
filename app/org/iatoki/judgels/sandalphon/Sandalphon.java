@@ -22,8 +22,8 @@ import java.util.List;
 
 public final class Sandalphon extends AbstractJudgelsClient implements BundleProblemGrader {
 
-    private static final String ENCODING= "UTF-8";
-    private static final String TOTP_ENCRYPTION_ALGORITHM =  "HmacSHA1";
+    private static final String ENCODING = "UTF-8";
+    private static final String TOTP_ENCRYPTION_ALGORITHM = "HmacSHA1";
 
     private final String clientJid;
 
@@ -132,8 +132,8 @@ public final class Sandalphon extends AbstractJudgelsClient implements BundlePro
         byte[] data = new byte[8];
         long value = timeMillis / timeStep;
 
-        for(int signKey = 8; signKey-- > 0; value >>>= 8) {
-            data[signKey] = (byte)((int)value);
+        for (int signKey = 8; signKey-- > 0; value >>>= 8) {
+            data[signKey] = (byte) ((int) value);
         }
 
         SecretKeySpec var15 = new SecretKeySpec(key, TOTP_ENCRYPTION_ALGORITHM);
@@ -145,14 +145,14 @@ public final class Sandalphon extends AbstractJudgelsClient implements BundlePro
             int offset = hash[hash.length - 1] & 15;
             long truncatedHash = 0L;
 
-            for(int i = 0; i < 4; ++i) {
+            for (int i = 0; i < 4; ++i) {
                 truncatedHash <<= 8;
-                truncatedHash |= (long)(hash[offset + i] & 255);
+                truncatedHash |= (long) (hash[offset + i] & 255);
             }
 
             truncatedHash &= 2147483647L;
             truncatedHash %= totpMod;
-            return (int)truncatedHash;
+            return (int) truncatedHash;
         } catch (InvalidKeyException | NoSuchAlgorithmException e) {
             throw new RuntimeException("The operation cannot be performed now.", e);
         }

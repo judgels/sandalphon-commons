@@ -13,7 +13,7 @@ import java.util.Set;
 
 public interface SubmissionAdapter {
 
-    //TODO: add CSRF token
+    //TODO add CSRF token
     Html renderViewStatement(String postSubmitUri, String name, String statement, GradingConfig config, String engine, Set<String> allowedGradingLanguageNames, String reasonNotAllowedToSubmit);
 
     Html renderStatementLanguageSelection(String switchLanguageUri, Set<String> allowedStatementLanguages, String currentStatementLanguage, Html statement);
