@@ -34,8 +34,6 @@ lazy val sandalphoncommons = (project in file("."))
         sources in (Compile,doc) := Seq.empty
     )
 
-lazy val playcommons = RootProject(file("../playcommons"))
-
-lazy val gabrielcommons = RootProject(file("../gabrielcommons"))
-
-lazy val sealtielcommons = RootProject(file("../sealtielcommons"))
+lazy val playcommons = RootProject(file("../play-commons"))
+lazy val gabrielcommons = RootProject(file("../gabriel-commons"))
+lazy val sealtielcommons = RootProject(file("../sealtiel-commons"))
