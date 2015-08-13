@@ -14,7 +14,7 @@ import org.iatoki.judgels.sandalphon.Submission;
 import org.iatoki.judgels.sandalphon.SubmissionException;
 import org.iatoki.judgels.sandalphon.SubmissionNotFoundException;
 import org.iatoki.judgels.sandalphon.adapters.SubmissionAdapter;
-import org.iatoki.judgels.sandalphon.adapters.impls.SubmissionAdapters;
+import org.iatoki.judgels.sandalphon.adapters.impls.SubmissionAdapterRegistry;
 import org.iatoki.judgels.sandalphon.models.daos.BaseGradingDao;
 import org.iatoki.judgels.sandalphon.models.daos.BaseSubmissionDao;
 import org.iatoki.judgels.sandalphon.models.entities.AbstractGradingModel;
@@ -210,7 +210,7 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
 
         gradingDao.persist(gradingModel, userJid, userIpAddress);
 
-        SubmissionAdapter adapter = SubmissionAdapters.fromGradingEngine(submissionModel.gradingEngine);
+        SubmissionAdapter adapter = SubmissionAdapterRegistry.getInstance().getByGradingEngineName(submissionModel.gradingEngine);
 
         GradingRequest request = adapter.createGradingRequest(gradingModel.jid, submissionModel.problemJid, submissionModel.gradingEngine, submissionModel.gradingLanguage, gradingSource);
 
