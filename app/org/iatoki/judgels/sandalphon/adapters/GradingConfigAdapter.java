@@ -7,8 +7,12 @@ import play.data.Form;
 import play.twirl.api.Html;
 
 import java.util.List;
+import java.util.Set;
 
 public interface GradingConfigAdapter {
+
+    Set<String> getSupportedGradingEngineNames();
+
     Form<?> createFormFromConfig(GradingConfig config);
 
     Form<?> createEmptyForm();
