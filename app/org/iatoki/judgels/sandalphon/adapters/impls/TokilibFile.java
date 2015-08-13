@@ -1,6 +1,6 @@
 package org.iatoki.judgels.sandalphon.adapters.impls;
 
-class TokilibFile implements Comparable<TokilibFile> {
+public class TokilibFile implements Comparable<TokilibFile> {
 
     public String filename;
     public int batchNo;
