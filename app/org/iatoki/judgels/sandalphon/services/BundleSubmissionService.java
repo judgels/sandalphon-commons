@@ -11,23 +11,18 @@ import java.io.IOException;
 import java.util.List;
 
 public interface BundleSubmissionService {
-    BundleSubmission findSubmissionById(long submissionId) throws BundleSubmissionNotFoundException;
 
-    long countSubmissionsByContestJidByUser(String contestJid, String problemJid, String userJid);
+    BundleSubmission findBundleSubmissionById(long submissionId) throws BundleSubmissionNotFoundException;
 
-    List<BundleSubmission> findAllSubmissionsByContestJid(String contestJid);
+    List<BundleSubmission> getBundleSubmissionsWithGradingsByContainerJidAndProblemJidAndUserJid(String containerJid, String problemJid, String userJid);
 
-    List<BundleSubmission> findAllSubmissionsByContestJidProblemJidAndUserJid(String contestJid, String problemJid, String userJid);
+    List<BundleSubmission> getBundleSubmissionsByJids(List<String> submissionJids);
 
-    List<BundleSubmission> findAllSubmissionsByContestJidBeforeTime(String contestJid, long time);
+    List<BundleSubmission> getBundleSubmissionsByFilters(String orderBy, String orderDir, String authorJid, String problemJid, String containerJid);
 
-    List<BundleSubmission> findSubmissionsWithoutGradingsByJids(List<String> submissionJids);
+    Page<BundleSubmission> getPageOfBundleSubmissions(long pageIndex, long pageSize, String orderBy, String orderDir, String authorJid, String problemJid, String containerJid);
 
-    List<BundleSubmission> findSubmissionsWithoutGradingsByFilters(String orderBy, String orderDir, String authorJid, String problemJid, String contestJid);
-
-    Page<BundleSubmission> pageSubmissions(long pageIndex, long pageSize, String orderBy, String orderDir, String authorJid, String problemJid, String contestJid);
-
-    String submit(String problemJid, String contestJid, BundleAnswer answer, String userJid, String userIpAddress);
+    String submit(String problemJid, String containerJid, BundleAnswer answer, String userJid, String userIpAddress);
 
     void regrade(String submissionJid, BundleAnswer answer, String userJid, String userIpAddress);
 

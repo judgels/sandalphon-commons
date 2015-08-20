@@ -11,5 +11,5 @@ import javax.persistence.metamodel.StaticMetamodel;
 public abstract class AbstractBundleSubmissionModel_ extends AbstractModel_ {
 
         public static volatile SingularAttribute<AbstractBundleSubmissionModel, String> problemJid;
-        public static volatile SingularAttribute<AbstractBundleSubmissionModel, String> contestJid;
+        public static volatile SingularAttribute<AbstractBundleSubmissionModel, String> containerJid;
 }

@@ -4,9 +4,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.iatoki.judgels.play.models.daos.impls.AbstractJudgelsHibernateDao;
-import org.iatoki.judgels.sandalphon.models.daos.BaseBundleGradingDao;
-import org.iatoki.judgels.sandalphon.models.entities.AbstractBundleGradingModel;
-import org.iatoki.judgels.sandalphon.models.entities.AbstractBundleGradingModel_;
+import org.iatoki.judgels.sandalphon.models.daos.BaseProgrammingGradingDao;
+import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingGradingModel;
+import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingGradingModel_;
 import play.db.jpa.JPA;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -15,9 +15,9 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractBundleGradingHibernateDao<M extends AbstractBundleGradingModel> extends AbstractJudgelsHibernateDao<M> implements BaseBundleGradingDao<M> {
+public abstract class AbstractProgrammingGradingHibernateDao<M extends AbstractProgrammingGradingModel> extends AbstractJudgelsHibernateDao<M> implements BaseProgrammingGradingDao<M> {
 
-    public AbstractBundleGradingHibernateDao(Class<M> modelClass) {
+    public AbstractProgrammingGradingHibernateDao(Class<M> modelClass) {
         super(modelClass);
     }
 
@@ -31,7 +31,7 @@ public abstract class AbstractBundleGradingHibernateDao<M extends AbstractBundle
         CriteriaQuery<M> query = cb.createQuery(getModelClass());
         Root<M> root = query.from(getModelClass());
 
-        query.where(root.get(AbstractBundleGradingModel_.submissionJid).in(submissionJids));
+        query.where(root.get(AbstractProgrammingGradingModel_.submissionJid).in(submissionJids));
 
         List<M> models = JPA.em().createQuery(query).getResultList();
 

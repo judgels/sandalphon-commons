@@ -1,6 +1,7 @@
 package org.iatoki.judgels.sandalphon;
 
 public final class BundleGrading {
+
     private final long id;
     private final String jid;
     private final double score;

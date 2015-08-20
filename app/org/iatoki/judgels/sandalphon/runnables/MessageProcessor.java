@@ -4,7 +4,7 @@ import com.google.gson.JsonSyntaxException;
 import org.iatoki.judgels.gabriel.GradingResponse;
 import org.iatoki.judgels.sandalphon.BadGradingResponseException;
 import org.iatoki.judgels.sandalphon.adapters.impls.GradingResponseAdapterRegistry;
-import org.iatoki.judgels.sandalphon.services.SubmissionService;
+import org.iatoki.judgels.sandalphon.services.ProgrammingSubmissionService;
 import org.iatoki.judgels.sealtiel.ClientMessage;
 import org.iatoki.judgels.sealtiel.Sealtiel;
 import play.db.jpa.JPA;
@@ -13,11 +13,11 @@ import java.io.IOException;
 
 public final class MessageProcessor implements Runnable {
 
-    private final SubmissionService submissionService;
+    private final ProgrammingSubmissionService submissionService;
     private final Sealtiel sealtiel;
     private final ClientMessage message;
 
-    public MessageProcessor(SubmissionService submissionService, Sealtiel sealtiel, ClientMessage message) {
+    public MessageProcessor(ProgrammingSubmissionService submissionService, Sealtiel sealtiel, ClientMessage message) {
         this.submissionService = submissionService;
         this.sealtiel = sealtiel;
         this.message = message;

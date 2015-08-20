@@ -1,12 +1,12 @@
 package org.iatoki.judgels.sandalphon.models.daos;
 
 import org.iatoki.judgels.play.models.daos.JudgelsDao;
-import org.iatoki.judgels.sandalphon.models.entities.AbstractBundleGradingModel;
+import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingGradingModel;
 
 import java.util.List;
 import java.util.Map;
 
-public interface BaseBundleGradingDao<M extends AbstractBundleGradingModel> extends JudgelsDao<M> {
+public interface BaseProgrammingGradingDao<M extends AbstractProgrammingGradingModel> extends JudgelsDao<M> {
 
     M createGradingModel();
 

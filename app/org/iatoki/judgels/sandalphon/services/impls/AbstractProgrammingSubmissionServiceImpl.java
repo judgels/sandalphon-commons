@@ -10,18 +10,18 @@ import org.iatoki.judgels.gabriel.GradingSource;
 import org.iatoki.judgels.gabriel.Verdict;
 import org.iatoki.judgels.play.Page;
 import org.iatoki.judgels.sandalphon.Grading;
-import org.iatoki.judgels.sandalphon.Submission;
-import org.iatoki.judgels.sandalphon.SubmissionException;
-import org.iatoki.judgels.sandalphon.SubmissionNotFoundException;
+import org.iatoki.judgels.sandalphon.ProgrammingSubmission;
+import org.iatoki.judgels.sandalphon.ProgrammingSubmissionException;
+import org.iatoki.judgels.sandalphon.ProgrammingSubmissionNotFoundException;
 import org.iatoki.judgels.sandalphon.adapters.SubmissionAdapter;
 import org.iatoki.judgels.sandalphon.adapters.impls.SubmissionAdapterRegistry;
-import org.iatoki.judgels.sandalphon.models.daos.BaseGradingDao;
-import org.iatoki.judgels.sandalphon.models.daos.BaseSubmissionDao;
-import org.iatoki.judgels.sandalphon.models.entities.AbstractGradingModel;
-import org.iatoki.judgels.sandalphon.models.entities.AbstractGradingModel_;
-import org.iatoki.judgels.sandalphon.models.entities.AbstractSubmissionModel;
-import org.iatoki.judgels.sandalphon.models.entities.AbstractSubmissionModel_;
-import org.iatoki.judgels.sandalphon.services.SubmissionService;
+import org.iatoki.judgels.sandalphon.models.daos.BaseProgrammingGradingDao;
+import org.iatoki.judgels.sandalphon.models.daos.BaseProgrammingSubmissionDao;
+import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingGradingModel;
+import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingGradingModel_;
+import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingSubmissionModel;
+import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingSubmissionModel_;
+import org.iatoki.judgels.sandalphon.services.ProgrammingSubmissionService;
 import org.iatoki.judgels.sealtiel.ClientMessage;
 import org.iatoki.judgels.sealtiel.Sealtiel;
 
@@ -32,14 +32,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissionModel, GM extends AbstractGradingModel> implements SubmissionService {
+public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends AbstractProgrammingSubmissionModel, GM extends AbstractProgrammingGradingModel> implements ProgrammingSubmissionService {
 
-    private final BaseSubmissionDao<SM> submissionDao;
-    private final BaseGradingDao<GM> gradingDao;
+    private final BaseProgrammingSubmissionDao<SM> submissionDao;
+    private final BaseProgrammingGradingDao<GM> gradingDao;
     private final Sealtiel sealtiel;
     private final String gabrielClientJid;
 
-    protected AbstractSubmissionServiceImpl(BaseSubmissionDao<SM> submissionDao, BaseGradingDao<GM> gradingDao, Sealtiel sealtiel, String gabrielClientJid) {
+    protected AbstractProgrammingSubmissionServiceImpl(BaseProgrammingSubmissionDao<SM> submissionDao, BaseProgrammingGradingDao<GM> gradingDao, Sealtiel sealtiel, String gabrielClientJid) {
         this.submissionDao = submissionDao;
         this.gradingDao = gradingDao;
         this.sealtiel = sealtiel;
@@ -47,60 +47,60 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
     }
 
     @Override
-    public Submission findSubmissionById(long submissionId) throws SubmissionNotFoundException {
-        SM submissionModel = submissionDao.findById(submissionId);
-        List<GM> gradingModels = gradingDao.findSortedByFilters("id", "asc", "", ImmutableMap.of(AbstractGradingModel_.submissionJid, submissionModel.jid), ImmutableMap.of(), 0, -1);
+    public ProgrammingSubmission findProgrammingSubmissionById(long programmingSubmissionId) throws ProgrammingSubmissionNotFoundException {
+        SM submissionModel = submissionDao.findById(programmingSubmissionId);
+        List<GM> gradingModels = gradingDao.findSortedByFilters("id", "asc", "", ImmutableMap.of(AbstractProgrammingGradingModel_.submissionJid, submissionModel.jid), ImmutableMap.of(), 0, -1);
 
         return createSubmissionFromModels(submissionModel, gradingModels);
     }
 
     @Override
-    public long countSubmissionsByContestJidByUser(String contestJid, String problemJid, String userJid) {
-        return submissionDao.countByContestJidAndUserJidAndProblemJid(contestJid, userJid, problemJid);
+    public long countProgrammingSubmissionsByUserJid(String containerJid, String problemJid, String userJid) {
+        return submissionDao.countByContainerJidAndUserJidAndProblemJid(containerJid, userJid, problemJid);
     }
 
     @Override
-    public List<Submission> findAllSubmissionsByContestJid(String contestJid) {
-        List<SM> submissionModels = submissionDao.findSortedByFilters("id", "asc", "", ImmutableMap.of(AbstractSubmissionModel_.contestJid, contestJid), ImmutableMap.of(), 0, -1);
-        Map<String, List<GM>> gradingModelsMap = gradingDao.findGradingsForSubmissions(Lists.transform(submissionModels, m -> m.jid));
+    public List<ProgrammingSubmission> getProgrammingSubmissionsWithGradingsByContainerJid(String containerJid) {
+        List<SM> submissionModels = submissionDao.findSortedByFilters("id", "asc", "", ImmutableMap.of(AbstractProgrammingSubmissionModel_.containerJid, containerJid), ImmutableMap.of(), 0, -1);
+        Map<String, List<GM>> gradingModelsMap = gradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
 
         return Lists.transform(submissionModels, m -> createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
     }
 
     @Override
-    public List<Submission> findAllSubmissionsByContestJidProblemJidAndUserJid(String contestJid, String problemJid, String userJid) {
-        List<SM> submissionModels = submissionDao.findSortedByFilters("id", "asc", "", ImmutableMap.<SingularAttribute<? super SM, String>, String>of(AbstractSubmissionModel_.contestJid, contestJid, AbstractSubmissionModel_.problemJid, problemJid, AbstractSubmissionModel_.userCreate, userJid), ImmutableMap.of(), 0, -1);
-        Map<String, List<GM>> gradingModelsMap = gradingDao.findGradingsForSubmissions(Lists.transform(submissionModels, m -> m.jid));
+    public List<ProgrammingSubmission> getProgrammingSubmissionsWithGradingsByContainerJidAndProblemJidAndUserJid(String containerJid, String problemJid, String userJid) {
+        List<SM> submissionModels = submissionDao.findSortedByFilters("id", "asc", "", ImmutableMap.<SingularAttribute<? super SM, String>, String>of(AbstractProgrammingSubmissionModel_.containerJid, containerJid, AbstractProgrammingSubmissionModel_.problemJid, problemJid, AbstractProgrammingSubmissionModel_.userCreate, userJid), ImmutableMap.of(), 0, -1);
+        Map<String, List<GM>> gradingModelsMap = gradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
 
         return Lists.transform(submissionModels, m -> createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
     }
 
     @Override
-    public List<Submission> findAllSubmissionsByContestJidBeforeTime(String contestJid, long time) {
-        List<SM> submissionModels = submissionDao.findByContestJidSinceTime(contestJid, time);
-        Map<String, List<GM>> gradingModelsMap = gradingDao.findGradingsForSubmissions(Lists.transform(submissionModels, m -> m.jid));
+    public List<ProgrammingSubmission> getProgrammingSubmissionsWithGradingsByContainerJidBeforeTime(String containerJid, long time) {
+        List<SM> submissionModels = submissionDao.getByContainerJidSinceTime(containerJid, time);
+        Map<String, List<GM>> gradingModelsMap = gradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
 
         return Lists.transform(submissionModels, m -> createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
     }
 
     @Override
-    public List<Submission> findSubmissionsWithoutGradingsByJids(List<String> submissionJids) {
-        List<SM> submissionModels = submissionDao.findByJids(submissionJids);
+    public List<ProgrammingSubmission> getProgrammingSubmissionsByJids(List<String> programmingSubmissionJids) {
+        List<SM> submissionModels = submissionDao.getByJids(programmingSubmissionJids);
 
         return Lists.transform(submissionModels, m -> createSubmissionFromModel(m));
     }
 
     @Override
-    public List<Submission> findSubmissionsWithoutGradingsByFilters(String orderBy, String orderDir, String authorJid, String problemJid, String contestJid) {
+    public List<ProgrammingSubmission> getProgrammingSubmissionsByFilters(String orderBy, String orderDir, String authorJid, String problemJid, String containerJid) {
         ImmutableMap.Builder<SingularAttribute<? super SM, String>, String> filterColumnsBuilder = ImmutableMap.builder();
         if (authorJid != null) {
-            filterColumnsBuilder.put(AbstractSubmissionModel_.userCreate, authorJid);
+            filterColumnsBuilder.put(AbstractProgrammingSubmissionModel_.userCreate, authorJid);
         }
         if (problemJid != null) {
-            filterColumnsBuilder.put(AbstractSubmissionModel_.problemJid, problemJid);
+            filterColumnsBuilder.put(AbstractProgrammingSubmissionModel_.problemJid, problemJid);
         }
-        if (contestJid != null) {
-            filterColumnsBuilder.put(AbstractSubmissionModel_.contestJid, contestJid);
+        if (containerJid != null) {
+            filterColumnsBuilder.put(AbstractProgrammingSubmissionModel_.containerJid, containerJid);
         }
 
         Map<SingularAttribute<? super SM, String>, String> filterColumns = filterColumnsBuilder.build();
@@ -112,39 +112,39 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
     }
 
     @Override
-    public Page<Submission> pageSubmissions(long pageIndex, long pageSize, String orderBy, String orderDir, String authorJid, String problemJid, String contestJid) {
+    public Page<ProgrammingSubmission> getPageOfProgrammingSubmissions(long pageIndex, long pageSize, String orderBy, String orderDir, String authorJid, String problemJid, String containerJid) {
         ImmutableMap.Builder<SingularAttribute<? super SM, String>, String> filterColumnsBuilder = ImmutableMap.builder();
         if (authorJid != null) {
-            filterColumnsBuilder.put(AbstractSubmissionModel_.userCreate, authorJid);
+            filterColumnsBuilder.put(AbstractProgrammingSubmissionModel_.userCreate, authorJid);
         }
         if (problemJid != null) {
-            filterColumnsBuilder.put(AbstractSubmissionModel_.problemJid, problemJid);
+            filterColumnsBuilder.put(AbstractProgrammingSubmissionModel_.problemJid, problemJid);
         }
-        if (contestJid != null) {
-            filterColumnsBuilder.put(AbstractSubmissionModel_.contestJid, contestJid);
+        if (containerJid != null) {
+            filterColumnsBuilder.put(AbstractProgrammingSubmissionModel_.containerJid, containerJid);
         }
 
         Map<SingularAttribute<? super SM, String>, String> filterColumns = filterColumnsBuilder.build();
 
-        long totalRowsCount = submissionDao.countByFilters("", filterColumns, ImmutableMap.of());
-        List<SM> submissionModels = submissionDao.findSortedByFilters(orderBy, orderDir, "", filterColumns, ImmutableMap.of(), pageIndex * pageSize, pageSize);
-        Map<String, List<GM>> gradingModelsMap = gradingDao.findGradingsForSubmissions(Lists.transform(submissionModels, m -> m.jid));
+        long totalRowsCount = submissionDao.countByFiltersEq("", filterColumns);
+        List<SM> submissionModels = submissionDao.findSortedByFiltersEq(orderBy, orderDir, "", filterColumns, pageIndex * pageSize, pageSize);
+        Map<String, List<GM>> gradingModelsMap = gradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
 
-        List<Submission> submissions = Lists.transform(submissionModels, m -> createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
+        List<ProgrammingSubmission> submissions = Lists.transform(submissionModels, m -> createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
 
         return new Page<>(submissions, totalRowsCount, pageIndex, pageSize);
     }
 
     @Override
-    public final String submit(String problemJid, String contestJid, String gradingEngine, String gradingLanguage, Set<String> allowedLanguageNames, GradingSource gradingSource, String userJid, String userIpAddress) throws SubmissionException {
+    public final String submit(String problemJid, String containerJid, String gradingEngine, String gradingLanguage, Set<String> allowedLanguageNames, GradingSource gradingSource, String userJid, String userIpAddress) throws ProgrammingSubmissionException {
         if (allowedLanguageNames != null && !allowedLanguageNames.contains(gradingLanguage)) {
-            throw new SubmissionException("Language " + gradingLanguage + " is not allowed ");
+            throw new ProgrammingSubmissionException("Language " + gradingLanguage + " is not allowed ");
         }
 
         SM submissionModel = submissionDao.createSubmissionModel();
 
         submissionModel.problemJid = problemJid;
-        submissionModel.contestJid = contestJid;
+        submissionModel.containerJid = containerJid;
         submissionModel.gradingEngine = gradingEngine;
         submissionModel.gradingLanguage = gradingLanguage;
 
@@ -186,12 +186,12 @@ public abstract class AbstractSubmissionServiceImpl<SM extends AbstractSubmissio
         return gradingDao.existsByJid(gradingJid);
     }
 
-    private Submission createSubmissionFromModel(SM submissionModel) {
+    private ProgrammingSubmission createSubmissionFromModel(SM submissionModel) {
         return createSubmissionFromModels(submissionModel, ImmutableList.of());
     }
 
-    private Submission createSubmissionFromModels(SM submissionModel, List<GM> gradingModels) {
-        return new Submission(submissionModel.id, submissionModel.jid, submissionModel.problemJid, submissionModel.contestJid, submissionModel.userCreate, submissionModel.gradingEngine, submissionModel.gradingLanguage, new Date(submissionModel.timeCreate),
+    private ProgrammingSubmission createSubmissionFromModels(SM submissionModel, List<GM> gradingModels) {
+        return new ProgrammingSubmission(submissionModel.id, submissionModel.jid, submissionModel.problemJid, submissionModel.containerJid, submissionModel.userCreate, submissionModel.gradingEngine, submissionModel.gradingLanguage, new Date(submissionModel.timeCreate),
                 Lists.transform(gradingModels, m -> createGradingFromModel(m))
         );
     }

@@ -8,7 +8,7 @@ import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 @JidPrefix("GRAD")
-public abstract class AbstractGradingModel extends AbstractJudgelsModel {
+public abstract class AbstractProgrammingGradingModel extends AbstractJudgelsModel {
 
     public String submissionJid;
 

@@ -11,5 +11,5 @@ public abstract class AbstractBundleSubmissionModel extends AbstractJudgelsModel
 
     public String problemJid;
 
-    public String contestJid;
+    public String containerJid;
 }

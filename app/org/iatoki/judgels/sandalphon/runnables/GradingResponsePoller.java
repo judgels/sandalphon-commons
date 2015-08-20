@@ -2,7 +2,7 @@ package org.iatoki.judgels.sandalphon.runnables;
 
 import akka.actor.Scheduler;
 import com.google.gson.JsonSyntaxException;
-import org.iatoki.judgels.sandalphon.services.SubmissionService;
+import org.iatoki.judgels.sandalphon.services.ProgrammingSubmissionService;
 import org.iatoki.judgels.sealtiel.ClientMessage;
 import org.iatoki.judgels.sealtiel.Sealtiel;
 import scala.concurrent.ExecutionContext;
@@ -12,13 +12,14 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public final class GradingResponsePoller implements Runnable {
+
     private final Scheduler scheduler;
     private final ExecutionContext executor;
-    private final SubmissionService submissionService;
+    private final ProgrammingSubmissionService submissionService;
     private final Sealtiel sealtiel;
     private final long interval;
 
-    public GradingResponsePoller(Scheduler scheduler, ExecutionContext executor, SubmissionService submissionService, Sealtiel sealtiel, long interval) {
+    public GradingResponsePoller(Scheduler scheduler, ExecutionContext executor, ProgrammingSubmissionService submissionService, Sealtiel sealtiel, long interval) {
         this.scheduler = scheduler;
         this.executor = executor;
         this.submissionService = submissionService;

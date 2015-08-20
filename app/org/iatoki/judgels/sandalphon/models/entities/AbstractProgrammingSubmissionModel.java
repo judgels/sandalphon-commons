@@ -7,11 +7,11 @@ import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 @JidPrefix("SUBM")
-public abstract class AbstractSubmissionModel extends AbstractJudgelsModel {
+public abstract class AbstractProgrammingSubmissionModel extends AbstractJudgelsModel {
 
     public String problemJid;
 
-    public String contestJid;
+    public String containerJid;
 
     public String gradingEngine;
 

@@ -10,10 +10,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class LanguageRestrictionAdapter {
+
     private LanguageRestrictionAdapter() {
         // prevent instantiation
     }
-
 
     public static LanguageRestriction createLanguageRestrictionFromForm(Map<String, String> allowedLanguageNames, boolean isAllowedAll) {
         if (allowedLanguageNames == null) {

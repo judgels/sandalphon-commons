@@ -3,6 +3,7 @@ package org.iatoki.judgels.sandalphon;
 import org.iatoki.judgels.gabriel.Verdict;
 
 public final class Grading {
+
     private final long id;
     private final String jid;
     private final Verdict verdict;

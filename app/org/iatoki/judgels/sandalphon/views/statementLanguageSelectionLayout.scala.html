@@ -1,7 +1,7 @@
-@(switchLanguageUri: String, allowedLanguages: Set[String], currentLanguage: String, content: Html)
-
-@import org.iatoki.judgels.sandalphon.WorldLanguageRegistry
 @import play.i18n.Messages
+@import org.iatoki.judgels.sandalphon.WorldLanguageRegistry
+
+@(switchLanguageUri: String, allowedLanguages: Set[String], currentLanguage: String, content: Html)
 
 <div class="small pull-left">
     @Messages.get("problem.statement.language.current"): <span class="label label-default">@WorldLanguageRegistry.getInstance.getDisplayLanguage(currentLanguage)</span>

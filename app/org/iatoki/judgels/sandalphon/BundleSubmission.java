@@ -4,19 +4,20 @@ import java.util.Date;
 import java.util.List;
 
 public final class BundleSubmission {
+
     private final long id;
     private final String jid;
     private final String problemJid;
-    private final String contestJid;
+    private final String containerJid;
     private final String authorJid;
     private final Date time;
     private final List<BundleGrading> gradings;
 
-    public BundleSubmission(long id, String jid, String problemJid, String contestJid, String authorJid, Date time, List<BundleGrading> gradings) {
+    public BundleSubmission(long id, String jid, String problemJid, String containerJid, String authorJid, Date time, List<BundleGrading> gradings) {
         this.id = id;
         this.jid = jid;
         this.problemJid = problemJid;
-        this.contestJid = contestJid;
+        this.containerJid = containerJid;
         this.authorJid = authorJid;
         this.time = time;
         this.gradings = gradings;
@@ -34,8 +35,8 @@ public final class BundleSubmission {
         return problemJid;
     }
 
-    public String getContestJid() {
-        return contestJid;
+    public String getContainerJid() {
+        return containerJid;
     }
 
     public String getAuthorJid() {

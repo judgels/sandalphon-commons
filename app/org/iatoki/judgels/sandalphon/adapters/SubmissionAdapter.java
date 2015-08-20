@@ -4,8 +4,8 @@ import org.iatoki.judgels.FileSystemProvider;
 import org.iatoki.judgels.gabriel.GradingConfig;
 import org.iatoki.judgels.gabriel.GradingRequest;
 import org.iatoki.judgels.gabriel.GradingSource;
-import org.iatoki.judgels.sandalphon.Submission;
-import org.iatoki.judgels.sandalphon.SubmissionException;
+import org.iatoki.judgels.sandalphon.ProgrammingSubmission;
+import org.iatoki.judgels.sandalphon.ProgrammingSubmissionException;
 import play.mvc.Http;
 import play.twirl.api.Html;
 
@@ -20,9 +20,9 @@ public interface SubmissionAdapter {
 
     Html renderStatementLanguageSelection(String switchLanguageUri, Set<String> allowedStatementLanguages, String currentStatementLanguage, Html statement);
 
-    Html renderViewSubmission(Submission submission, GradingSource source, String authorName, String problemAlias, String problemName, String gradingLanguageName, String contestName);
+    Html renderViewSubmission(ProgrammingSubmission submission, GradingSource source, String authorName, String problemAlias, String problemName, String gradingLanguageName, String contestName);
 
-    GradingSource createGradingSourceFromNewSubmission(Http.MultipartFormData body) throws SubmissionException;
+    GradingSource createGradingSourceFromNewSubmission(Http.MultipartFormData body) throws ProgrammingSubmissionException;
 
     GradingSource createGradingSourceFromPastSubmission(FileSystemProvider localFileSystemProvider, FileSystemProvider remoteFileSystemProvider, String submissionJid);
 

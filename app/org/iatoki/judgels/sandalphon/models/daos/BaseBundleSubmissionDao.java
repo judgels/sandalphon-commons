@@ -9,9 +9,5 @@ public interface BaseBundleSubmissionDao<M extends AbstractBundleSubmissionModel
 
     M createSubmissionModel();
 
-    List<M> findByContestJidSinceTime(String contestJid, long time);
-
-    List<M> findByContestJidAndUserJidAndProblemJid(String contestJid, String userJid, String problemJid);
-
-    long countByContestJidAndUserJidAndProblemJid(String contestJid, String userJid, String problemJid);
+    List<M> getByContainerJidAndUserJidAndProblemJid(String containerJid, String userJid, String problemJid);
 }

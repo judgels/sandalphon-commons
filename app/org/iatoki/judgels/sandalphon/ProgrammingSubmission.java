@@ -5,7 +5,8 @@ import org.iatoki.judgels.gabriel.Verdict;
 import java.util.Date;
 import java.util.List;
 
-public final class Submission {
+public final class ProgrammingSubmission {
+
     private final long id;
     private final String jid;
     private final String problemJid;
@@ -16,7 +17,7 @@ public final class Submission {
     private final Date time;
     private final List<Grading> gradings;
 
-    public Submission(long id, String jid, String problemJid, String contestJid, String authorJid, String gradingEngine, String gradingLanguage, Date time, List<Grading> gradings) {
+    public ProgrammingSubmission(long id, String jid, String problemJid, String contestJid, String authorJid, String gradingEngine, String gradingLanguage, Date time, List<Grading> gradings) {
         this.id = id;
         this.jid = jid;
         this.problemJid = problemJid;
