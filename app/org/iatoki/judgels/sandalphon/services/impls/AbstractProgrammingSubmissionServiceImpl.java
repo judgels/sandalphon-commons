@@ -13,8 +13,6 @@ import org.iatoki.judgels.sandalphon.Grading;
 import org.iatoki.judgels.sandalphon.ProgrammingSubmission;
 import org.iatoki.judgels.sandalphon.ProgrammingSubmissionException;
 import org.iatoki.judgels.sandalphon.ProgrammingSubmissionNotFoundException;
-import org.iatoki.judgels.sandalphon.adapters.SubmissionAdapter;
-import org.iatoki.judgels.sandalphon.adapters.impls.SubmissionAdapterRegistry;
 import org.iatoki.judgels.sandalphon.models.daos.BaseProgrammingGradingDao;
 import org.iatoki.judgels.sandalphon.models.daos.BaseProgrammingSubmissionDao;
 import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingGradingModel;
