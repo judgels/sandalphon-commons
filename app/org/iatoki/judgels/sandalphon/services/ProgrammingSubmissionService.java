@@ -1,8 +1,8 @@
 package org.iatoki.judgels.sandalphon.services;
 
+import org.iatoki.judgels.gabriel.SubmissionSource;
 import org.iatoki.judgels.play.Page;
 import org.iatoki.judgels.gabriel.GradingResult;
-import org.iatoki.judgels.gabriel.GradingSource;
 import org.iatoki.judgels.sandalphon.ProgrammingSubmission;
 import org.iatoki.judgels.sandalphon.ProgrammingSubmissionException;
 import org.iatoki.judgels.sandalphon.ProgrammingSubmissionNotFoundException;
@@ -28,9 +28,9 @@ public interface ProgrammingSubmissionService {
 
     Page<ProgrammingSubmission> getPageOfProgrammingSubmissions(long pageIndex, long pageSize, String orderBy, String orderDir, String authorJid, String problemJid, String containerJid);
 
-    String submit(String problemJid, String containerJid, String gradingEngine, String gradingLanguage, Set<String> allowedLanguageNames, GradingSource gradingSource, String userJid, String userIpAddress) throws ProgrammingSubmissionException;
+    String submit(String problemJid, String containerJid, String gradingEngine, String gradingLanguage, Set<String> allowedLanguageNames, SubmissionSource submissionSource, String userJid, String userIpAddress) throws ProgrammingSubmissionException;
 
-    void regrade(String submissionJid, GradingSource gradingSource, String userJid, String userIpAddress);
+    void regrade(String submissionJid, SubmissionSource submissionSource, String userJid, String userIpAddress);
 
     void grade(String gradingJid, GradingResult result, String grader, String graderIpAddress);
 

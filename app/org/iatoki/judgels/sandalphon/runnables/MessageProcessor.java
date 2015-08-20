@@ -1,9 +1,8 @@
 package org.iatoki.judgels.sandalphon.runnables;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import org.iatoki.judgels.gabriel.GradingResponse;
-import org.iatoki.judgels.sandalphon.BadGradingResponseException;
-import org.iatoki.judgels.sandalphon.adapters.impls.GradingResponseAdapterRegistry;
 import org.iatoki.judgels.sandalphon.services.ProgrammingSubmissionService;
 import org.iatoki.judgels.sealtiel.ClientMessage;
 import org.iatoki.judgels.sealtiel.Sealtiel;
@@ -27,15 +26,14 @@ public final class MessageProcessor implements Runnable {
     public void run() {
         JPA.withTransaction(() -> {
                 try {
-                    GradingResponse response = GradingResponseAdapterRegistry.getInstance().getByGradingResponseName(message.getMessageType()).parseFromJson(message.getMessage());
-
+                    GradingResponse response = new Gson().fromJson(message.getMessage(), GradingResponse.class);
                     if (submissionService.gradingExists(response.getGradingJid())) {
                         submissionService.grade(response.getGradingJid(), response.getResult(), message.getSourceClientJid(), "localhost");
                         sealtiel.sendConfirmation(message.getId());
                     } else {
                         System.out.println("Grading JID " + response.getGradingJid() + " not found!");
                     }
-                } catch (BadGradingResponseException | IOException | JsonSyntaxException e) {
+                } catch (IOException | JsonSyntaxException e) {
                     System.out.println("Bad grading response!");
                     e.printStackTrace();
                 }
