@@ -3,6 +3,7 @@ package org.iatoki.judgels.sandalphon.adapters;
 import org.iatoki.judgels.FileInfo;
 import org.iatoki.judgels.gabriel.GradingConfig;
 import org.iatoki.judgels.gabriel.SubmissionSource;
+import org.iatoki.judgels.sandalphon.ProblemStatement;
 import org.iatoki.judgels.sandalphon.ProgrammingSubmission;
 import play.api.mvc.Call;
 import play.data.Form;
@@ -23,7 +24,7 @@ public interface GradingEngineAdapter {
 
     Html renderUpdateGradingConfig(Form<?> form, Call postUpdateGradingConfigCall, List<FileInfo> testDataFiles, List<FileInfo> helperFiles);
 
-    Html renderViewStatement(String postSubmitUri, String name, String statement, GradingConfig config, String engine, Set<String> allowedGradingLanguage, String reasonNotAllowedToSubmit);
+    Html renderViewStatement(String postSubmitUri, ProblemStatement statement, GradingConfig config, String engine, Set<String> allowedGradingLanguage, String reasonNotAllowedToSubmit);
 
     Html renderViewSubmission(ProgrammingSubmission submission, SubmissionSource submissionSource, String authorName, String problemAlias, String problemName, String gradingLanguage, String contestName);
 }
