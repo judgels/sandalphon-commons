@@ -12,7 +12,6 @@ lazy val sandalphoncommons = (project in file("."))
         scalaVersion := "2.11.7",
         libraryDependencies ++= Seq(
             "com.ibm.icu" % "icu4j" % "55.1",
-            "org.webjars" % "ckeditor" % "4.4.1",
             "org.webjars" % "prettify" % "4-Mar-2013",
             "com.warrenstrange" % "googleauth" % "0.4.3"
         ),
