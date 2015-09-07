@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
+import org.iatoki.judgels.api.JudgelsAPIClientException;
+import org.iatoki.judgels.api.sealtiel.SealtielAPI;
 import org.iatoki.judgels.gabriel.GradingRequest;
 import org.iatoki.judgels.gabriel.GradingResult;
 import org.iatoki.judgels.gabriel.SubmissionSource;
@@ -20,11 +22,8 @@ import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingGradingM
 import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingSubmissionModel;
 import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingSubmissionModel_;
 import org.iatoki.judgels.sandalphon.services.ProgrammingSubmissionService;
-import org.iatoki.judgels.sealtiel.ClientMessage;
-import org.iatoki.judgels.sealtiel.Sealtiel;
 
 import javax.persistence.metamodel.SingularAttribute;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -34,13 +33,13 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
 
     private final BaseProgrammingSubmissionDao<SM> submissionDao;
     private final BaseProgrammingGradingDao<GM> gradingDao;
-    private final Sealtiel sealtiel;
+    private final SealtielAPI sealtielAPI;
     private final String gabrielClientJid;
 
-    protected AbstractProgrammingSubmissionServiceImpl(BaseProgrammingSubmissionDao<SM> submissionDao, BaseProgrammingGradingDao<GM> gradingDao, Sealtiel sealtiel, String gabrielClientJid) {
+    protected AbstractProgrammingSubmissionServiceImpl(BaseProgrammingSubmissionDao<SM> submissionDao, BaseProgrammingGradingDao<GM> gradingDao, SealtielAPI sealtielAPI, String gabrielClientJid) {
         this.submissionDao = submissionDao;
         this.gradingDao = gradingDao;
-        this.sealtiel = sealtiel;
+        this.sealtielAPI = sealtielAPI;
         this.gabrielClientJid = gabrielClientJid;
     }
 
@@ -209,13 +208,15 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
         gradingDao.persist(gradingModel, userJid, userIpAddress);
 
         GradingRequest request = new GradingRequest(gradingModel.jid, submissionModel.problemJid, submissionModel.gradingEngine, submissionModel.gradingLanguage, submissionSource);
+
+
         try {
             if (isRegrading) {
-                sealtiel.sendLowPriorityMessage(new ClientMessage(gabrielClientJid, request.getClass().getSimpleName(), new Gson().toJson(request)));
+                sealtielAPI.sendLowPriorityMessage(gabrielClientJid, request.getClass().getSimpleName(), new Gson().toJson(request));
             } else {
-                sealtiel.sendMessage(new ClientMessage(gabrielClientJid, request.getClass().getSimpleName(), new Gson().toJson(request)));
+                sealtielAPI.sendMessage(gabrielClientJid, request.getClass().getSimpleName(), new Gson().toJson(request));
             }
-        } catch (IOException e) {
+        } catch (JudgelsAPIClientException e) {
             throw new RuntimeException(e);
         }
     }

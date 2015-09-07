@@ -1,14 +1,13 @@
 package org.iatoki.judgels.sandalphon.runnables;
 
 import akka.actor.Scheduler;
-import com.google.gson.JsonSyntaxException;
+import org.iatoki.judgels.api.JudgelsAPIClientException;
+import org.iatoki.judgels.api.sealtiel.SealtielAPI;
+import org.iatoki.judgels.api.sealtiel.SealtielMessage;
 import org.iatoki.judgels.sandalphon.services.ProgrammingSubmissionService;
-import org.iatoki.judgels.sealtiel.ClientMessage;
-import org.iatoki.judgels.sealtiel.Sealtiel;
 import scala.concurrent.ExecutionContext;
 import scala.concurrent.duration.Duration;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public final class GradingResponsePoller implements Runnable {
@@ -16,29 +15,29 @@ public final class GradingResponsePoller implements Runnable {
     private final Scheduler scheduler;
     private final ExecutionContext executor;
     private final ProgrammingSubmissionService submissionService;
-    private final Sealtiel sealtiel;
+    private final SealtielAPI sealtielAPI;
     private final long interval;
 
-    public GradingResponsePoller(Scheduler scheduler, ExecutionContext executor, ProgrammingSubmissionService submissionService, Sealtiel sealtiel, long interval) {
+    public GradingResponsePoller(Scheduler scheduler, ExecutionContext executor, ProgrammingSubmissionService submissionService, SealtielAPI sealtielAPI, long interval) {
         this.scheduler = scheduler;
         this.executor = executor;
         this.submissionService = submissionService;
-        this.sealtiel = sealtiel;
+        this.sealtielAPI = sealtielAPI;
         this.interval = interval;
     }
 
     @Override
     public void run() {
         long checkPoint = System.currentTimeMillis();
-        ClientMessage message = null;
+        SealtielMessage message = null;
         do {
             try {
-                message = sealtiel.fetchMessage();
+                message = sealtielAPI.fetchMessage();
                 if (message != null) {
-                    MessageProcessor processor = new MessageProcessor(submissionService, sealtiel, message);
+                    MessageProcessor processor = new MessageProcessor(submissionService, sealtielAPI, message);
                     scheduler.scheduleOnce(Duration.create(10, TimeUnit.MILLISECONDS), processor, executor);
                 }
-            } catch (JsonSyntaxException | IOException e) {
+            } catch (JudgelsAPIClientException e) {
                 System.out.println("Bad grading response!");
                 e.printStackTrace();
             }

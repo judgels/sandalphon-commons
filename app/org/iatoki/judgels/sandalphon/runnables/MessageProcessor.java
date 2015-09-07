@@ -1,24 +1,22 @@
 package org.iatoki.judgels.sandalphon.runnables;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import org.iatoki.judgels.api.JudgelsAPIClientException;
+import org.iatoki.judgels.api.sealtiel.SealtielAPI;
+import org.iatoki.judgels.api.sealtiel.SealtielMessage;
 import org.iatoki.judgels.gabriel.GradingResponse;
 import org.iatoki.judgels.sandalphon.services.ProgrammingSubmissionService;
-import org.iatoki.judgels.sealtiel.ClientMessage;
-import org.iatoki.judgels.sealtiel.Sealtiel;
 import play.db.jpa.JPA;
-
-import java.io.IOException;
 
 public final class MessageProcessor implements Runnable {
 
     private final ProgrammingSubmissionService submissionService;
-    private final Sealtiel sealtiel;
-    private final ClientMessage message;
+    private final SealtielAPI sealtielAPI;
+    private final SealtielMessage message;
 
-    public MessageProcessor(ProgrammingSubmissionService submissionService, Sealtiel sealtiel, ClientMessage message) {
+    public MessageProcessor(ProgrammingSubmissionService submissionService, SealtielAPI sealtielAPI, SealtielMessage message) {
         this.submissionService = submissionService;
-        this.sealtiel = sealtiel;
+        this.sealtielAPI = sealtielAPI;
         this.message = message;
     }
 
@@ -29,11 +27,11 @@ public final class MessageProcessor implements Runnable {
                     GradingResponse response = new Gson().fromJson(message.getMessage(), GradingResponse.class);
                     if (submissionService.gradingExists(response.getGradingJid())) {
                         submissionService.grade(response.getGradingJid(), response.getResult(), message.getSourceClientJid(), "localhost");
-                        sealtiel.sendConfirmation(message.getId());
+                        sealtielAPI.acknowledgeMessage(message.getId());
                     } else {
                         System.out.println("Grading JID " + response.getGradingJid() + " not found!");
                     }
-                } catch (IOException | JsonSyntaxException e) {
+                } catch (JudgelsAPIClientException e) {
                     System.out.println("Bad grading response!");
                     e.printStackTrace();
                 }
