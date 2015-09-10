@@ -2,7 +2,7 @@ package org.iatoki.judgels.sandalphon.runnables;
 
 import akka.actor.Scheduler;
 import org.iatoki.judgels.api.JudgelsAPIClientException;
-import org.iatoki.judgels.api.sealtiel.SealtielAPI;
+import org.iatoki.judgels.api.sealtiel.SealtielClientAPI;
 import org.iatoki.judgels.api.sealtiel.SealtielMessage;
 import org.iatoki.judgels.sandalphon.services.ProgrammingSubmissionService;
 import scala.concurrent.ExecutionContext;
@@ -15,12 +15,12 @@ public final class GradingResponsePoller implements Runnable {
     private final Scheduler scheduler;
     private final ExecutionContext executor;
     private final ProgrammingSubmissionService submissionService;
-    private final SealtielAPI sealtielAPI;
+    private final SealtielClientAPI sealtielAPI;
     private final long interval;
 
     private boolean isConnected;
 
-    public GradingResponsePoller(Scheduler scheduler, ExecutionContext executor, ProgrammingSubmissionService submissionService, SealtielAPI sealtielAPI, long interval) {
+    public GradingResponsePoller(Scheduler scheduler, ExecutionContext executor, ProgrammingSubmissionService submissionService, SealtielClientAPI sealtielAPI, long interval) {
         this.scheduler = scheduler;
         this.executor = executor;
         this.submissionService = submissionService;

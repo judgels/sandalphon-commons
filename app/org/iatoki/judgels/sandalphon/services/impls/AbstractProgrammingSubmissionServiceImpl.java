@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import org.iatoki.judgels.api.JudgelsAPIClientException;
-import org.iatoki.judgels.api.sealtiel.SealtielAPI;
+import org.iatoki.judgels.api.sealtiel.SealtielClientAPI;
 import org.iatoki.judgels.gabriel.GradingRequest;
 import org.iatoki.judgels.gabriel.GradingResult;
 import org.iatoki.judgels.gabriel.SubmissionSource;
@@ -33,10 +33,10 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
 
     private final BaseProgrammingSubmissionDao<SM> submissionDao;
     private final BaseProgrammingGradingDao<GM> gradingDao;
-    private final SealtielAPI sealtielAPI;
+    private final SealtielClientAPI sealtielAPI;
     private final String gabrielClientJid;
 
-    protected AbstractProgrammingSubmissionServiceImpl(BaseProgrammingSubmissionDao<SM> submissionDao, BaseProgrammingGradingDao<GM> gradingDao, SealtielAPI sealtielAPI, String gabrielClientJid) {
+    protected AbstractProgrammingSubmissionServiceImpl(BaseProgrammingSubmissionDao<SM> submissionDao, BaseProgrammingGradingDao<GM> gradingDao, SealtielClientAPI sealtielAPI, String gabrielClientJid) {
         this.submissionDao = submissionDao;
         this.gradingDao = gradingDao;
         this.sealtielAPI = sealtielAPI;
