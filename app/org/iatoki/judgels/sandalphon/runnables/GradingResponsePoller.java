@@ -15,16 +15,16 @@ public final class GradingResponsePoller implements Runnable {
     private final Scheduler scheduler;
     private final ExecutionContext executor;
     private final ProgrammingSubmissionService submissionService;
-    private final SealtielClientAPI sealtielAPI;
+    private final SealtielClientAPI sealtielClientAPI;
     private final long interval;
 
     private boolean isConnected;
 
-    public GradingResponsePoller(Scheduler scheduler, ExecutionContext executor, ProgrammingSubmissionService submissionService, SealtielClientAPI sealtielAPI, long interval) {
+    public GradingResponsePoller(Scheduler scheduler, ExecutionContext executor, ProgrammingSubmissionService submissionService, SealtielClientAPI sealtielClientAPI, long interval) {
         this.scheduler = scheduler;
         this.executor = executor;
         this.submissionService = submissionService;
-        this.sealtielAPI = sealtielAPI;
+        this.sealtielClientAPI = sealtielClientAPI;
         this.interval = interval;
         this.isConnected = false;
     }
@@ -35,14 +35,14 @@ public final class GradingResponsePoller implements Runnable {
         SealtielMessage message = null;
         do {
             try {
-                message = sealtielAPI.fetchMessage();
+                message = sealtielClientAPI.fetchMessage();
                 if (message != null) {
                     if (!isConnected) {
                         System.out.println("Connected to Sealtiel!");
                         isConnected = true;
                     }
 
-                    MessageProcessor processor = new MessageProcessor(submissionService, sealtielAPI, message);
+                    MessageProcessor processor = new MessageProcessor(submissionService, sealtielClientAPI, message);
                     scheduler.scheduleOnce(Duration.create(10, TimeUnit.MILLISECONDS), processor, executor);
                 }
             } catch (JudgelsAPIClientException e) {

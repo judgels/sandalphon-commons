@@ -33,13 +33,13 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
 
     private final BaseProgrammingSubmissionDao<SM> submissionDao;
     private final BaseProgrammingGradingDao<GM> gradingDao;
-    private final SealtielClientAPI sealtielAPI;
+    private final SealtielClientAPI sealtielClientAPI;
     private final String gabrielClientJid;
 
-    protected AbstractProgrammingSubmissionServiceImpl(BaseProgrammingSubmissionDao<SM> submissionDao, BaseProgrammingGradingDao<GM> gradingDao, SealtielClientAPI sealtielAPI, String gabrielClientJid) {
+    protected AbstractProgrammingSubmissionServiceImpl(BaseProgrammingSubmissionDao<SM> submissionDao, BaseProgrammingGradingDao<GM> gradingDao, SealtielClientAPI sealtielClientAPI, String gabrielClientJid) {
         this.submissionDao = submissionDao;
         this.gradingDao = gradingDao;
-        this.sealtielAPI = sealtielAPI;
+        this.sealtielClientAPI = sealtielClientAPI;
         this.gabrielClientJid = gabrielClientJid;
     }
 
@@ -212,9 +212,9 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
 
         try {
             if (isRegrading) {
-                sealtielAPI.sendLowPriorityMessage(gabrielClientJid, request.getClass().getSimpleName(), new Gson().toJson(request));
+                sealtielClientAPI.sendLowPriorityMessage(gabrielClientJid, request.getClass().getSimpleName(), new Gson().toJson(request));
             } else {
-                sealtielAPI.sendMessage(gabrielClientJid, request.getClass().getSimpleName(), new Gson().toJson(request));
+                sealtielClientAPI.sendMessage(gabrielClientJid, request.getClass().getSimpleName(), new Gson().toJson(request));
             }
         } catch (JudgelsAPIClientException e) {
             throw new RuntimeException(e);
