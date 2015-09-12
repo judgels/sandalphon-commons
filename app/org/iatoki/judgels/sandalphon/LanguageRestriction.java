@@ -6,15 +6,13 @@ import java.util.Set;
 
 public final class LanguageRestriction {
     private Set<String> allowedLanguageNames;
-    private boolean isAllowedAll;
 
-    public LanguageRestriction(Set<String> allowedLanguageNames, boolean isAllowedAll) {
+    public LanguageRestriction(Set<String> allowedLanguageNames) {
         this.allowedLanguageNames = allowedLanguageNames;
-        this.isAllowedAll = isAllowedAll;
     }
 
     public static LanguageRestriction defaultRestriction() {
-        return new LanguageRestriction(ImmutableSet.of(), true);
+        return new LanguageRestriction(ImmutableSet.of());
     }
 
     public Set<String> getAllowedLanguageNames() {
@@ -22,6 +20,6 @@ public final class LanguageRestriction {
     }
 
     public boolean isAllowedAll() {
-        return isAllowedAll;
+        return allowedLanguageNames.isEmpty();
     }
 }

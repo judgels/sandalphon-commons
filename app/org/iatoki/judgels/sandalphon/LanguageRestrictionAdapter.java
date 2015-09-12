@@ -16,10 +16,10 @@ public final class LanguageRestrictionAdapter {
     }
 
     public static LanguageRestriction createLanguageRestrictionFromForm(Map<String, String> allowedLanguageNames, boolean isAllowedAll) {
-        if (allowedLanguageNames == null) {
-            return new LanguageRestriction(ImmutableSet.of(), isAllowedAll);
+        if (allowedLanguageNames == null || isAllowedAll) {
+            return new LanguageRestriction(ImmutableSet.of());
         } else {
-            return new LanguageRestriction(allowedLanguageNames.keySet(), isAllowedAll);
+            return new LanguageRestriction(allowedLanguageNames.keySet());
         }
     }
 

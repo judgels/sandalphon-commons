@@ -7,5 +7,5 @@ import java.io.IOException;
 
 public interface BundleProblemGrader {
 
-    BundleGradingResult gradeBundleProblem(String problemJid, BundleAnswer bundleAnswer) throws IOException;
+    BundleGradingResult gradeBundleProblem(String problemJid, BundleAnswer answer) throws IOException;
 }
