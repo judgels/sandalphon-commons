@@ -10,18 +10,18 @@ public final class ProgrammingSubmission {
     private final long id;
     private final String jid;
     private final String problemJid;
-    private final String contestJid;
+    private final String containerJid;
     private final String authorJid;
     private final String gradingEngine;
     private final String gradingLanguage;
     private final Date time;
     private final List<Grading> gradings;
 
-    public ProgrammingSubmission(long id, String jid, String problemJid, String contestJid, String authorJid, String gradingEngine, String gradingLanguage, Date time, List<Grading> gradings) {
+    public ProgrammingSubmission(long id, String jid, String problemJid, String containerJid, String authorJid, String gradingEngine, String gradingLanguage, Date time, List<Grading> gradings) {
         this.id = id;
         this.jid = jid;
         this.problemJid = problemJid;
-        this.contestJid = contestJid;
+        this.containerJid = containerJid;
         this.authorJid = authorJid;
         this.gradingEngine = gradingEngine;
         this.gradingLanguage = gradingLanguage;
@@ -41,8 +41,8 @@ public final class ProgrammingSubmission {
         return problemJid;
     }
 
-    public String getContestJid() {
-        return contestJid;
+    public String getContainerJid() {
+        return containerJid;
     }
 
     public String getAuthorJid() {
