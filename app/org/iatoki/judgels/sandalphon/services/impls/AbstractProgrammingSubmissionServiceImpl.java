@@ -217,7 +217,7 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
                 sealtielClientAPI.sendMessage(gabrielClientJid, request.getClass().getSimpleName(), new Gson().toJson(request));
             }
         } catch (JudgelsAPIClientException e) {
-            throw new RuntimeException(e);
+            // log later
         }
     }
 }
