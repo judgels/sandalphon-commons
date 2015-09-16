@@ -1,13 +1,14 @@
-package org.iatoki.judgels.sandalphon.models.daos.impls;
+package org.iatoki.judgels.sandalphon.models.daos.jedishibernate;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.iatoki.judgels.play.models.daos.impls.AbstractJudgelsHibernateDao;
-import org.iatoki.judgels.sandalphon.models.daos.BaseProgrammingGradingDao;
-import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingGradingModel;
-import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingGradingModel_;
+import org.iatoki.judgels.play.models.daos.impls.AbstractJudgelsJedisHibernateDao;
+import org.iatoki.judgels.sandalphon.models.daos.BaseBundleGradingDao;
+import org.iatoki.judgels.sandalphon.models.entities.AbstractBundleGradingModel;
+import org.iatoki.judgels.sandalphon.models.entities.AbstractBundleGradingModel_;
 import play.db.jpa.JPA;
+import redis.clients.jedis.JedisPool;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -15,10 +16,10 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractProgrammingGradingHibernateDao<M extends AbstractProgrammingGradingModel> extends AbstractJudgelsHibernateDao<M> implements BaseProgrammingGradingDao<M> {
+public abstract class AbstractBundleGradingJedisHibernateDao<M extends AbstractBundleGradingModel> extends AbstractJudgelsJedisHibernateDao<M> implements BaseBundleGradingDao<M> {
 
-    public AbstractProgrammingGradingHibernateDao(Class<M> modelClass) {
-        super(modelClass);
+    public AbstractBundleGradingJedisHibernateDao(JedisPool jedisPool, Class<M> modelClass) {
+        super(jedisPool, modelClass);
     }
 
     @Override
@@ -31,7 +32,7 @@ public abstract class AbstractProgrammingGradingHibernateDao<M extends AbstractP
         CriteriaQuery<M> query = cb.createQuery(getModelClass());
         Root<M> root = query.from(getModelClass());
 
-        query.where(root.get(AbstractProgrammingGradingModel_.submissionJid).in(submissionJids));
+        query.where(root.get(AbstractBundleGradingModel_.submissionJid).in(submissionJids));
 
         List<M> models = JPA.em().createQuery(query).getResultList();
 

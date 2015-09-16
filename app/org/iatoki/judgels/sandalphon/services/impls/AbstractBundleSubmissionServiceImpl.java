@@ -9,15 +9,15 @@ import org.iatoki.judgels.play.Page;
 import org.iatoki.judgels.sandalphon.BundleAnswer;
 import org.iatoki.judgels.sandalphon.BundleGrading;
 import org.iatoki.judgels.sandalphon.BundleGradingResult;
-import org.iatoki.judgels.sandalphon.models.entities.AbstractBundleGradingModel_;
-import org.iatoki.judgels.sandalphon.models.entities.AbstractBundleSubmissionModel_;
-import org.iatoki.judgels.sandalphon.services.BundleProblemGrader;
 import org.iatoki.judgels.sandalphon.BundleSubmission;
 import org.iatoki.judgels.sandalphon.BundleSubmissionNotFoundException;
 import org.iatoki.judgels.sandalphon.models.daos.BaseBundleGradingDao;
 import org.iatoki.judgels.sandalphon.models.daos.BaseBundleSubmissionDao;
 import org.iatoki.judgels.sandalphon.models.entities.AbstractBundleGradingModel;
+import org.iatoki.judgels.sandalphon.models.entities.AbstractBundleGradingModel_;
 import org.iatoki.judgels.sandalphon.models.entities.AbstractBundleSubmissionModel;
+import org.iatoki.judgels.sandalphon.models.entities.AbstractBundleSubmissionModel_;
+import org.iatoki.judgels.sandalphon.services.BundleProblemGrader;
 import org.iatoki.judgels.sandalphon.services.BundleSubmissionService;
 import play.data.DynamicForm;
 
@@ -121,7 +121,7 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
     }
 
     @Override
-    public void regrade(String submissionJid, BundleAnswer answer, String userJid, String userIpAddress) {
+    public final void regrade(String submissionJid, BundleAnswer answer, String userJid, String userIpAddress) {
         SM submissionModel = bundleSubmissionDao.findByJid(submissionJid);
 
         grade(submissionModel, answer, userJid, userIpAddress);

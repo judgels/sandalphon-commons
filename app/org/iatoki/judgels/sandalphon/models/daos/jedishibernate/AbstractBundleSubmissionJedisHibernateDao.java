@@ -1,20 +1,21 @@
-package org.iatoki.judgels.sandalphon.models.daos.impls;
+package org.iatoki.judgels.sandalphon.models.daos.jedishibernate;
 
-import org.iatoki.judgels.play.models.daos.impls.AbstractJudgelsHibernateDao;
+import org.iatoki.judgels.play.models.daos.impls.AbstractJudgelsJedisHibernateDao;
 import org.iatoki.judgels.sandalphon.models.daos.BaseBundleSubmissionDao;
 import org.iatoki.judgels.sandalphon.models.entities.AbstractBundleSubmissionModel;
 import org.iatoki.judgels.sandalphon.models.entities.AbstractBundleSubmissionModel_;
 import play.db.jpa.JPA;
+import redis.clients.jedis.JedisPool;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-public abstract class AbstractBundleSubmissionHibernateDao<M extends AbstractBundleSubmissionModel> extends AbstractJudgelsHibernateDao<M> implements BaseBundleSubmissionDao<M> {
+public abstract class AbstractBundleSubmissionJedisHibernateDao<M extends AbstractBundleSubmissionModel> extends AbstractJudgelsJedisHibernateDao<M> implements BaseBundleSubmissionDao<M> {
 
-    protected AbstractBundleSubmissionHibernateDao(Class<M> modelClass) {
-        super(modelClass);
+    protected AbstractBundleSubmissionJedisHibernateDao(JedisPool jedisPool, Class<M> modelClass) {
+        super(jedisPool, modelClass);
     }
 
     @Override
