@@ -57,6 +57,14 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
     }
 
     @Override
+    public List<ProgrammingSubmission> getAllProgrammingSubmissions() {
+        List<SM> submissionModels = programmingSubmissionDao.getAll();
+        Map<String, List<GM>> gradingModelsMap = programmingGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
+
+        return Lists.transform(submissionModels, m -> createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
+    }
+
+    @Override
     public List<ProgrammingSubmission> getProgrammingSubmissionsWithGradingsByContainerJid(String containerJid) {
         List<SM> submissionModels = programmingSubmissionDao.findSortedByFiltersEq("id", "asc", "", ImmutableMap.of(AbstractProgrammingSubmissionModel_.containerJid, containerJid), 0, -1);
         Map<String, List<GM>> gradingModelsMap = programmingGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));

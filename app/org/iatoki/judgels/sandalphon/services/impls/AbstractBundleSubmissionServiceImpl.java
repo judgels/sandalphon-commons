@@ -48,6 +48,14 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
     }
 
     @Override
+    public List<BundleSubmission> getAllBundleSubmissions() {
+        List<SM> submissionModels = bundleSubmissionDao.getAll();
+        Map<String, List<GM>> gradingModelsMap = bundleGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
+
+        return Lists.transform(submissionModels, m -> createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
+    }
+
+    @Override
     public List<BundleSubmission> getBundleSubmissionsWithGradingsByContainerJidAndProblemJidAndUserJid(String containerJid, String problemJid, String userJid) {
         List<SM> submissionModels = bundleSubmissionDao.findSortedByFilters("id", "asc", "", ImmutableMap.<SingularAttribute<? super SM, String>, String>of(AbstractBundleSubmissionModel_.containerJid, containerJid, AbstractBundleSubmissionModel_.problemJid, problemJid, AbstractBundleSubmissionModel_.userCreate, userJid), ImmutableMap.of(), 0, -1);
         Map<String, List<GM>> gradingModelsMap = bundleGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
