@@ -14,4 +14,6 @@ public interface BaseProgrammingSubmissionDao<M extends AbstractProgrammingSubmi
     List<M> getByContainerJidAndUserJidAndProblemJid(String containerJid, String userJid, String problemJid);
 
     long countByContainerJidAndUserJidAndProblemJid(String containerJid, String userJid, String problemJid);
+
+    List<Long> getAllSubmissionsSubmitTime();
 }

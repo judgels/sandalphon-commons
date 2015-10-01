@@ -16,6 +16,8 @@ public interface ProgrammingSubmissionService {
 
     long countProgrammingSubmissionsByUserJid(String containerJid, String problemJid, String userJid);
 
+    List<Long> getAllProgrammingSubmissionsSubmitTime();
+
     List<ProgrammingSubmission> getAllProgrammingSubmissions();
 
     List<ProgrammingSubmission> getProgrammingSubmissionsWithGradingsByContainerJid(String containerJid);

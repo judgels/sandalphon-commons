@@ -10,4 +10,6 @@ public interface BaseBundleSubmissionDao<M extends AbstractBundleSubmissionModel
     M createSubmissionModel();
 
     List<M> getByContainerJidAndUserJidAndProblemJid(String containerJid, String userJid, String problemJid);
+
+    List<Long> getAllSubmissionsSubmitTime();
 }

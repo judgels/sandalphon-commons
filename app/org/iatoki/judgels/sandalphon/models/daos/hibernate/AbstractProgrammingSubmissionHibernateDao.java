@@ -1,6 +1,7 @@
 package org.iatoki.judgels.sandalphon.models.daos.hibernate;
 
 import org.iatoki.judgels.play.models.daos.impls.AbstractJudgelsHibernateDao;
+import org.iatoki.judgels.play.models.entities.AbstractJudgelsModel_;
 import org.iatoki.judgels.sandalphon.models.daos.BaseProgrammingSubmissionDao;
 import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingSubmissionModel;
 import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingSubmissionModel_;
@@ -48,5 +49,16 @@ public abstract class AbstractProgrammingSubmissionHibernateDao<M extends Abstra
         query.select(cb.count(root)).where(cb.and(cb.equal(root.get(AbstractProgrammingSubmissionModel_.containerJid), containerJid), cb.equal(root.get(AbstractProgrammingSubmissionModel_.userCreate), userJid), cb.equal(root.get(AbstractProgrammingSubmissionModel_.problemJid), problemJid)));
 
         return JPA.em().createQuery(query).getSingleResult();
+    }
+
+    @Override
+    public List<Long> getAllSubmissionsSubmitTime() {
+        CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<M> root = query.from(getModelClass());
+
+        query.select(root.get(AbstractJudgelsModel_.timeCreate));
+
+        return JPA.em().createQuery(query).getResultList();
     }
 }

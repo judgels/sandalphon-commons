@@ -57,6 +57,11 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
     }
 
     @Override
+    public List<Long> getAllProgrammingSubmissionsSubmitTime() {
+        return programmingSubmissionDao.getAllSubmissionsSubmitTime();
+    }
+
+    @Override
     public List<ProgrammingSubmission> getAllProgrammingSubmissions() {
         List<SM> submissionModels = programmingSubmissionDao.getAll();
         Map<String, List<GM>> gradingModelsMap = programmingGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));

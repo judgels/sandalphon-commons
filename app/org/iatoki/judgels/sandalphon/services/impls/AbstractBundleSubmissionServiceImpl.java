@@ -48,6 +48,11 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
     }
 
     @Override
+    public List<Long> getAllBundleSubmissionsSubmitTime() {
+        return bundleSubmissionDao.getAllSubmissionsSubmitTime();
+    }
+
+    @Override
     public List<BundleSubmission> getAllBundleSubmissions() {
         List<SM> submissionModels = bundleSubmissionDao.getAll();
         Map<String, List<GM>> gradingModelsMap = bundleGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
