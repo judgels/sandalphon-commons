@@ -27,10 +27,10 @@ public final class MessageProcessor implements Runnable {
                     GradingResponse response = new Gson().fromJson(message.getMessage(), GradingResponse.class);
                     if (submissionService.gradingExists(response.getGradingJid())) {
                         submissionService.grade(response.getGradingJid(), response.getResult(), message.getSourceClientJid(), "localhost");
-                        sealtielAPI.acknowledgeMessage(message.getId());
                     } else {
                         System.out.println("Grading JID " + response.getGradingJid() + " not found!");
                     }
+                    sealtielAPI.acknowledgeMessage(message.getId());
                 } catch (JudgelsAPIClientException e) {
                     System.out.println("Bad grading response!");
                     e.printStackTrace();
