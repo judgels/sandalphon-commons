@@ -1,6 +1,5 @@
 package org.iatoki.judgels.sandalphon.services.impls;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
@@ -9,9 +8,7 @@ import org.iatoki.judgels.api.sealtiel.SealtielClientAPI;
 import org.iatoki.judgels.gabriel.GradingRequest;
 import org.iatoki.judgels.gabriel.GradingResult;
 import org.iatoki.judgels.gabriel.SubmissionSource;
-import org.iatoki.judgels.gabriel.Verdict;
 import org.iatoki.judgels.play.Page;
-import org.iatoki.judgels.sandalphon.Grading;
 import org.iatoki.judgels.sandalphon.ProgrammingSubmission;
 import org.iatoki.judgels.sandalphon.ProgrammingSubmissionException;
 import org.iatoki.judgels.sandalphon.ProgrammingSubmissionNotFoundException;
@@ -24,7 +21,6 @@ import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingSubmissi
 import org.iatoki.judgels.sandalphon.services.ProgrammingSubmissionService;
 
 import javax.persistence.metamodel.SingularAttribute;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,7 +44,7 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
         SM submissionModel = programmingSubmissionDao.findById(programmingSubmissionId);
         List<GM> gradingModels = programmingGradingDao.findSortedByFilters("id", "asc", "", ImmutableMap.of(AbstractProgrammingGradingModel_.submissionJid, submissionModel.jid), ImmutableMap.of(), 0, -1);
 
-        return createSubmissionFromModels(submissionModel, gradingModels);
+        return ProgrammingSubmissionServiceUtils.createSubmissionFromModels(submissionModel, gradingModels);
     }
 
     @Override
@@ -66,7 +62,7 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
         List<SM> submissionModels = programmingSubmissionDao.getAll();
         Map<String, List<GM>> gradingModelsMap = programmingGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
 
-        return Lists.transform(submissionModels, m -> createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
+        return Lists.transform(submissionModels, m -> ProgrammingSubmissionServiceUtils.createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
     }
 
     @Override
@@ -74,7 +70,7 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
         List<SM> submissionModels = programmingSubmissionDao.findSortedByFiltersEq("id", "asc", "", ImmutableMap.of(AbstractProgrammingSubmissionModel_.containerJid, containerJid), 0, -1);
         Map<String, List<GM>> gradingModelsMap = programmingGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
 
-        return Lists.transform(submissionModels, m -> createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
+        return Lists.transform(submissionModels, m -> ProgrammingSubmissionServiceUtils.createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
     }
 
     @Override
@@ -82,7 +78,7 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
         List<SM> submissionModels = programmingSubmissionDao.findSortedByFilters("id", "asc", "", ImmutableMap.<SingularAttribute<? super SM, String>, String>of(AbstractProgrammingSubmissionModel_.containerJid, containerJid, AbstractProgrammingSubmissionModel_.problemJid, problemJid, AbstractProgrammingSubmissionModel_.userCreate, userJid), ImmutableMap.of(), 0, -1);
         Map<String, List<GM>> gradingModelsMap = programmingGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
 
-        return Lists.transform(submissionModels, m -> createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
+        return Lists.transform(submissionModels, m -> ProgrammingSubmissionServiceUtils.createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
     }
 
     @Override
@@ -90,14 +86,14 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
         List<SM> submissionModels = programmingSubmissionDao.getByContainerJidSinceTime(containerJid, time);
         Map<String, List<GM>> gradingModelsMap = programmingGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
 
-        return Lists.transform(submissionModels, m -> createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
+        return Lists.transform(submissionModels, m -> ProgrammingSubmissionServiceUtils.createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
     }
 
     @Override
     public List<ProgrammingSubmission> getProgrammingSubmissionsByJids(List<String> programmingSubmissionJids) {
         List<SM> submissionModels = programmingSubmissionDao.getByJids(programmingSubmissionJids);
 
-        return Lists.transform(submissionModels, m -> createSubmissionFromModel(m));
+        return Lists.transform(submissionModels, m -> ProgrammingSubmissionServiceUtils.createSubmissionFromModel(m));
     }
 
     @Override
@@ -117,7 +113,7 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
 
         List<SM> submissionModels = programmingSubmissionDao.findSortedByFiltersEq(orderBy, orderDir, "", filterColumns, 0, -1);
 
-        return Lists.transform(submissionModels, m -> createSubmissionFromModel(m));
+        return Lists.transform(submissionModels, m -> ProgrammingSubmissionServiceUtils.createSubmissionFromModel(m));
     }
 
     @Override
@@ -139,7 +135,7 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
         List<SM> submissionModels = programmingSubmissionDao.findSortedByFiltersEq(orderBy, orderDir, "", filterColumns, pageIndex * pageSize, pageSize);
         Map<String, List<GM>> gradingModelsMap = programmingGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
 
-        List<ProgrammingSubmission> submissions = Lists.transform(submissionModels, m -> createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
+        List<ProgrammingSubmission> submissions = Lists.transform(submissionModels, m -> ProgrammingSubmissionServiceUtils.createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
 
         return new Page<>(submissions, totalRowsCount, pageIndex, pageSize);
     }
@@ -193,20 +189,6 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
     @Override
     public boolean gradingExists(String gradingJid) {
         return programmingGradingDao.existsByJid(gradingJid);
-    }
-
-    private ProgrammingSubmission createSubmissionFromModel(SM submissionModel) {
-        return createSubmissionFromModels(submissionModel, ImmutableList.of());
-    }
-
-    private ProgrammingSubmission createSubmissionFromModels(SM submissionModel, List<GM> gradingModels) {
-        return new ProgrammingSubmission(submissionModel.id, submissionModel.jid, submissionModel.problemJid, submissionModel.containerJid, submissionModel.userCreate, submissionModel.gradingEngine, submissionModel.gradingLanguage, new Date(submissionModel.timeCreate),
-                Lists.transform(gradingModels, m -> createGradingFromModel(m))
-        );
-    }
-
-    private Grading createGradingFromModel(GM gradingModel) {
-        return new Grading(gradingModel.id, gradingModel.jid, new Verdict(gradingModel.verdictCode, gradingModel.verdictName), gradingModel.score, gradingModel.details);
     }
 
     private void requestGrading(SM submissionModel, SubmissionSource submissionSource, boolean isRegrading, String userJid, String userIpAddress) {

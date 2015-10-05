@@ -7,7 +7,6 @@ import com.google.gson.Gson;
 import org.iatoki.judgels.FileSystemProvider;
 import org.iatoki.judgels.play.Page;
 import org.iatoki.judgels.sandalphon.BundleAnswer;
-import org.iatoki.judgels.sandalphon.BundleGrading;
 import org.iatoki.judgels.sandalphon.BundleGradingResult;
 import org.iatoki.judgels.sandalphon.BundleSubmission;
 import org.iatoki.judgels.sandalphon.BundleSubmissionNotFoundException;
@@ -23,7 +22,6 @@ import play.data.DynamicForm;
 
 import javax.persistence.metamodel.SingularAttribute;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +42,7 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
         SM submissionModel = bundleSubmissionDao.findById(submissionId);
         List<GM> gradingModels = bundleGradingDao.findSortedByFilters("id", "asc", "", ImmutableMap.of(AbstractBundleGradingModel_.submissionJid, submissionModel.jid), ImmutableMap.of(), 0, -1);
 
-        return createSubmissionFromModels(submissionModel, gradingModels);
+        return BundleSubmissionServiceUtils.createSubmissionFromModels(submissionModel, gradingModels);
     }
 
     @Override
@@ -57,7 +55,7 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
         List<SM> submissionModels = bundleSubmissionDao.getAll();
         Map<String, List<GM>> gradingModelsMap = bundleGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
 
-        return Lists.transform(submissionModels, m -> createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
+        return Lists.transform(submissionModels, m -> BundleSubmissionServiceUtils.createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
     }
 
     @Override
@@ -65,7 +63,7 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
         List<SM> submissionModels = bundleSubmissionDao.findSortedByFilters("id", "asc", "", ImmutableMap.<SingularAttribute<? super SM, String>, String>of(AbstractBundleSubmissionModel_.containerJid, containerJid, AbstractBundleSubmissionModel_.problemJid, problemJid, AbstractBundleSubmissionModel_.userCreate, userJid), ImmutableMap.of(), 0, -1);
         Map<String, List<GM>> gradingModelsMap = bundleGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
 
-        return Lists.transform(submissionModels, m -> createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
+        return Lists.transform(submissionModels, m -> BundleSubmissionServiceUtils.createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
     }
 
     @Override
@@ -85,14 +83,14 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
 
         List<SM> submissionModels = bundleSubmissionDao.findSortedByFilters(orderBy, orderDir, "", filterColumns, ImmutableMap.of(), 0, -1);
 
-        return Lists.transform(submissionModels, m -> createSubmissionFromModel(m));
+        return Lists.transform(submissionModels, m -> BundleSubmissionServiceUtils.createSubmissionFromModel(m));
     }
 
     @Override
     public List<BundleSubmission> getBundleSubmissionsByJids(List<String> submissionJids) {
         List<SM> submissionModels = bundleSubmissionDao.getByJids(submissionJids);
 
-        return Lists.transform(submissionModels, m -> createSubmissionFromModel(m));
+        return Lists.transform(submissionModels, m -> BundleSubmissionServiceUtils.createSubmissionFromModel(m));
     }
 
     @Override
@@ -114,7 +112,7 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
         List<SM> submissionModels = bundleSubmissionDao.findSortedByFilters(orderBy, orderDir, "", filterColumns, ImmutableMap.of(), pageIndex * pageSize, pageSize);
         Map<String, List<GM>> gradingModelsMap = bundleGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
 
-        List<BundleSubmission> submissions = Lists.transform(submissionModels, m -> createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
+        List<BundleSubmission> submissions = Lists.transform(submissionModels, m -> BundleSubmissionServiceUtils.createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
 
         return new Page<>(submissions, totalRowsCount, pageIndex, pageSize);
     }
@@ -179,20 +177,6 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
         }
 
         return new Gson().fromJson(fileSystemProvider.readFromFile(ImmutableList.of(submissionJid, "answer.json")), BundleAnswer.class);
-    }
-
-    private BundleSubmission createSubmissionFromModel(SM submissionModel) {
-        return createSubmissionFromModels(submissionModel, ImmutableList.of());
-    }
-
-    private BundleSubmission createSubmissionFromModels(SM submissionModel, List<GM> gradingModels) {
-        return new BundleSubmission(submissionModel.id, submissionModel.jid, submissionModel.problemJid, submissionModel.containerJid, submissionModel.userCreate, new Date(submissionModel.timeCreate),
-                Lists.transform(gradingModels, m -> createGradingFromModel(m))
-        );
-    }
-
-    private BundleGrading createGradingFromModel(GM gradingModel) {
-        return new BundleGrading(gradingModel.id, gradingModel.jid, gradingModel.score, gradingModel.details);
     }
 
     private void grade(SM submissionModel, BundleAnswer answer, String userJid, String userIpAddress) {
