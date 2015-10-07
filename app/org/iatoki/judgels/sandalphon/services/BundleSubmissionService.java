@@ -14,6 +14,8 @@ public interface BundleSubmissionService {
 
     BundleSubmission findBundleSubmissionById(long submissionId) throws BundleSubmissionNotFoundException;
 
+    BundleSubmission findBundleSubmissionByJid(String submissionJid);
+
     List<Long> getAllBundleSubmissionsSubmitTime();
 
     List<BundleSubmission> getAllBundleSubmissions();

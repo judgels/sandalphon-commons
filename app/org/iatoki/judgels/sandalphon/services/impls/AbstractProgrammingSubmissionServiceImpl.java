@@ -48,6 +48,14 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
     }
 
     @Override
+    public ProgrammingSubmission findProgrammingSubmissionByJid(String programmingSubmissionJid) {
+        SM submissionModel = programmingSubmissionDao.findByJid(programmingSubmissionJid);
+        List<GM> gradingModels = programmingGradingDao.findSortedByFilters("id", "asc", "", ImmutableMap.of(AbstractProgrammingGradingModel_.submissionJid, submissionModel.jid), ImmutableMap.of(), 0, -1);
+
+        return ProgrammingSubmissionServiceUtils.createSubmissionFromModels(submissionModel, gradingModels);
+    }
+
+    @Override
     public long countProgrammingSubmissionsByUserJid(String containerJid, String problemJid, String userJid) {
         return programmingSubmissionDao.countByContainerJidAndUserJidAndProblemJid(containerJid, userJid, problemJid);
     }

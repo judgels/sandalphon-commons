@@ -14,6 +14,8 @@ public interface ProgrammingSubmissionService {
 
     ProgrammingSubmission findProgrammingSubmissionById(long programmingSubmissionId) throws ProgrammingSubmissionNotFoundException;
 
+    ProgrammingSubmission findProgrammingSubmissionByJid(String programmingSubmissionJid);
+
     long countProgrammingSubmissionsByUserJid(String containerJid, String problemJid, String userJid);
 
     List<Long> getAllProgrammingSubmissionsSubmitTime();

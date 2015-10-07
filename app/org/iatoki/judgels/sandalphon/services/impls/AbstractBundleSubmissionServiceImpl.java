@@ -46,6 +46,14 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
     }
 
     @Override
+    public BundleSubmission findBundleSubmissionByJid(String submissionJid) {
+        SM submissionModel = bundleSubmissionDao.findByJid(submissionJid);
+        List<GM> gradingModels = bundleGradingDao.findSortedByFilters("id", "asc", "", ImmutableMap.of(AbstractBundleGradingModel_.submissionJid, submissionModel.jid), ImmutableMap.of(), 0, -1);
+
+        return BundleSubmissionServiceUtils.createSubmissionFromModels(submissionModel, gradingModels);
+    }
+
+    @Override
     public List<Long> getAllBundleSubmissionsSubmitTime() {
         return bundleSubmissionDao.getAllSubmissionsSubmitTime();
     }
