@@ -11,12 +11,12 @@ import play.db.jpa.JPA;
 public final class MessageProcessor implements Runnable {
 
     private final ProgrammingSubmissionService submissionService;
-    private final SealtielClientAPI sealtielAPI;
+    private final SealtielClientAPI sealtielClientAPI;
     private final SealtielMessage message;
 
-    public MessageProcessor(ProgrammingSubmissionService submissionService, SealtielClientAPI sealtielAPI, SealtielMessage message) {
+    public MessageProcessor(ProgrammingSubmissionService submissionService, SealtielClientAPI sealtielClientAPI, SealtielMessage message) {
         this.submissionService = submissionService;
-        this.sealtielAPI = sealtielAPI;
+        this.sealtielClientAPI = sealtielClientAPI;
         this.message = message;
     }
 
@@ -30,7 +30,7 @@ public final class MessageProcessor implements Runnable {
                     } else {
                         System.out.println("Grading JID " + response.getGradingJid() + " not found!");
                     }
-                    sealtielAPI.acknowledgeMessage(message.getId());
+                    sealtielClientAPI.acknowledgeMessage(message.getId());
                 } catch (JudgelsAPIClientException e) {
                     System.out.println("Bad grading response!");
                     e.printStackTrace();
