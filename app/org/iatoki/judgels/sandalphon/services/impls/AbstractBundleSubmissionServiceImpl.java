@@ -68,7 +68,7 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
 
     @Override
     public List<BundleSubmission> getBundleSubmissionsWithGradingsByContainerJidAndProblemJidAndUserJid(String containerJid, String problemJid, String userJid) {
-        List<SM> submissionModels = bundleSubmissionDao.findSortedByFilters("id", "asc", "", ImmutableMap.<SingularAttribute<? super SM, String>, String>of(AbstractBundleSubmissionModel_.containerJid, containerJid, AbstractBundleSubmissionModel_.problemJid, problemJid, AbstractBundleSubmissionModel_.userCreate, userJid), ImmutableMap.of(), 0, -1);
+        List<SM> submissionModels = bundleSubmissionDao.findSortedByFilters("id", "asc", "", ImmutableMap.<SingularAttribute<? super SM, ? extends Object>, String>of(AbstractBundleSubmissionModel_.containerJid, containerJid, AbstractBundleSubmissionModel_.problemJid, problemJid, AbstractBundleSubmissionModel_.userCreate, userJid), ImmutableMap.of(), 0, -1);
         Map<String, List<GM>> gradingModelsMap = bundleGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
 
         return Lists.transform(submissionModels, m -> BundleSubmissionServiceUtils.createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
@@ -76,7 +76,7 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
 
     @Override
     public List<BundleSubmission> getBundleSubmissionsByFilters(String orderBy, String orderDir, String authorJid, String problemJid, String containerJid) {
-        ImmutableMap.Builder<SingularAttribute<? super SM, String>, String> filterColumnsBuilder = ImmutableMap.builder();
+        ImmutableMap.Builder<SingularAttribute<? super SM, ? extends Object>, String> filterColumnsBuilder = ImmutableMap.builder();
         if (authorJid != null) {
             filterColumnsBuilder.put(AbstractBundleSubmissionModel_.userCreate, authorJid);
         }
@@ -87,7 +87,7 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
             filterColumnsBuilder.put(AbstractBundleSubmissionModel_.containerJid, containerJid);
         }
 
-        Map<SingularAttribute<? super SM, String>, String> filterColumns = filterColumnsBuilder.build();
+        Map<SingularAttribute<? super SM, ? extends Object>, String> filterColumns = filterColumnsBuilder.build();
 
         List<SM> submissionModels = bundleSubmissionDao.findSortedByFilters(orderBy, orderDir, "", filterColumns, ImmutableMap.of(), 0, -1);
 
@@ -103,7 +103,7 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
 
     @Override
     public Page<BundleSubmission> getPageOfBundleSubmissions(long pageIndex, long pageSize, String orderBy, String orderDir, String authorJid, String problemJid, String containerJid) {
-        ImmutableMap.Builder<SingularAttribute<? super SM, String>, String> filterColumnsBuilder = ImmutableMap.builder();
+        ImmutableMap.Builder<SingularAttribute<? super SM, ? extends Object>, String> filterColumnsBuilder = ImmutableMap.builder();
         if (authorJid != null) {
             filterColumnsBuilder.put(AbstractBundleSubmissionModel_.userCreate, authorJid);
         }
@@ -114,7 +114,7 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
             filterColumnsBuilder.put(AbstractBundleSubmissionModel_.containerJid, containerJid);
         }
 
-        Map<SingularAttribute<? super SM, String>, String> filterColumns = filterColumnsBuilder.build();
+        Map<SingularAttribute<? super SM, ? extends Object>, String> filterColumns = filterColumnsBuilder.build();
 
         long totalRowsCount = bundleSubmissionDao.countByFilters("", filterColumns, ImmutableMap.of());
         List<SM> submissionModels = bundleSubmissionDao.findSortedByFilters(orderBy, orderDir, "", filterColumns, ImmutableMap.of(), pageIndex * pageSize, pageSize);
