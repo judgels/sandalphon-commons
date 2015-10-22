@@ -8,6 +8,8 @@ import org.iatoki.judgels.gabriel.GradingResponse;
 import org.iatoki.judgels.sandalphon.services.ProgrammingSubmissionService;
 import play.db.jpa.JPA;
 
+import java.util.concurrent.TimeUnit;
+
 public final class MessageProcessor implements Runnable {
 
     private final ProgrammingSubmissionService submissionService;
@@ -25,7 +27,22 @@ public final class MessageProcessor implements Runnable {
         JPA.withTransaction(() -> {
                 try {
                     GradingResponse response = new Gson().fromJson(message.getMessage(), GradingResponse.class);
-                    if (submissionService.gradingExists(response.getGradingJid())) {
+
+                    boolean gradingExists = false;
+
+                    // temporary solution
+                    // problem is: grading response arrives before the grading model persistance has been flushed
+                    
+                    for (int i = 0; i < 3; i++) {
+                        if (submissionService.gradingExists(response.getGradingJid())) {
+                            gradingExists = true;
+                            break;
+                        }
+
+                        Thread.sleep(TimeUnit.MILLISECONDS.convert(5, TimeUnit.SECONDS));
+                    }
+
+                    if (gradingExists) {
                         submissionService.grade(response.getGradingJid(), response.getResult(), message.getSourceClientJid(), "localhost");
                     } else {
                         System.out.println("Grading JID " + response.getGradingJid() + " not found!");
