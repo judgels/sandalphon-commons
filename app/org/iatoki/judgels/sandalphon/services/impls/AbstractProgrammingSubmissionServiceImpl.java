@@ -19,6 +19,7 @@ import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingGradingM
 import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingSubmissionModel;
 import org.iatoki.judgels.sandalphon.models.entities.AbstractProgrammingSubmissionModel_;
 import org.iatoki.judgels.sandalphon.services.ProgrammingSubmissionService;
+import play.db.jpa.JPA;
 
 import javax.persistence.metamodel.SingularAttribute;
 import java.util.List;
@@ -209,8 +210,10 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
 
         programmingGradingDao.persist(gradingModel, userJid, userIpAddress);
 
-        GradingRequest request = new GradingRequest(gradingModel.jid, submissionModel.problemJid, submissionModel.gradingEngine, submissionModel.gradingLanguage, submissionSource);
+        // TODO refactor this into DAO
+        JPA.em().flush();
 
+        GradingRequest request = new GradingRequest(gradingModel.jid, submissionModel.problemJid, submissionModel.gradingEngine, submissionModel.gradingLanguage, submissionSource);
 
         try {
             if (isRegrading) {
