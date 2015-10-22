@@ -32,7 +32,7 @@ public final class MessageProcessor implements Runnable {
 
                     // temporary solution
                     // problem is: grading response arrives before the grading model persistance has been flushed
-                    
+
                     for (int i = 0; i < 3; i++) {
                         if (submissionService.gradingExists(response.getGradingJid())) {
                             gradingExists = true;
