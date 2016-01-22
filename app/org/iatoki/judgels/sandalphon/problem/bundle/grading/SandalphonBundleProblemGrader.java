@@ -3,18 +3,14 @@ package org.iatoki.judgels.sandalphon.problem.bundle.grading;
 import org.iatoki.judgels.api.sandalphon.SandalphonBundleAnswer;
 import org.iatoki.judgels.api.sandalphon.SandalphonBundleGradingResult;
 import org.iatoki.judgels.api.sandalphon.SandalphonClientAPI;
-import org.iatoki.judgels.sandalphon.problem.bundle.grading.BundleAnswer;
-import org.iatoki.judgels.sandalphon.problem.bundle.grading.BundleDetailResult;
-import org.iatoki.judgels.sandalphon.problem.bundle.grading.BundleGradingResult;
-import org.iatoki.judgels.sandalphon.problem.bundle.grading.BundleProblemGrader;
 
 import javax.inject.Inject;
-import javax.inject.Named;
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Named("bundleProblemGrader")
+@Singleton
 public final class SandalphonBundleProblemGrader implements BundleProblemGrader {
 
     private final SandalphonClientAPI sandalphonClientAPI;
