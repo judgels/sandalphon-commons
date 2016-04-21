@@ -42,7 +42,7 @@ public final class ProgrammingSubmissionUtils {
         Map<String, String> formFilenames = fileParts.stream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getFilename()));
         Map<String, File> files = fileParts.stream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getFile()));
 
-        ImmutableMap.Builder<String, String> formFileContentsBuilder = ImmutableMap.builder();
+        ImmutableMap.Builder<String, byte[]> formFileContentsBuilder = ImmutableMap.builder();
 
         for (Map.Entry<String, File> entry : files.entrySet()) {
             String key = entry.getKey();
@@ -52,9 +52,9 @@ public final class ProgrammingSubmissionUtils {
                 throw new ProgrammingSubmissionException("Source file must not exceed 300KB");
             }
 
-            String content;
+            byte[] content;
             try {
-                content = FileUtils.readFileToString(file);
+                content = FileUtils.readFileToByteArray(file);
             } catch (IOException e) {
                 throw new ProgrammingSubmissionException(e.getMessage());
             }
@@ -62,7 +62,7 @@ public final class ProgrammingSubmissionUtils {
             formFileContentsBuilder.put(key, content);
         }
 
-        Map<String, String> formFileContents = formFileContentsBuilder.build();
+        Map<String, byte[]> formFileContents = formFileContentsBuilder.build();
 
         ImmutableMap.Builder<String, SourceFile> submissionFiles = ImmutableMap.builder();
 
@@ -72,7 +72,7 @@ public final class ProgrammingSubmissionUtils {
             }
 
             String filename = formFilenames.get(fieldKey);
-            String fileContent = formFileContents.get(fieldKey);
+            byte[] fileContent = formFileContents.get(fieldKey);
 
             String verification = language.verifyFile(filename, fileContent);
 
@@ -108,7 +108,7 @@ public final class ProgrammingSubmissionUtils {
 
             try {
                 String name = sourceFile.getName();
-                String content = fileSystemProvider.readFromFile(ImmutableList.of(submissionJid, fieldKey.getName(), name));
+                byte[] content = fileSystemProvider.readByteArrayFromFile(ImmutableList.of(submissionJid, fieldKey.getName(), name));
                 submissionFiles.put(fieldKey.getName(), new SourceFile(name, content));
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -131,7 +131,7 @@ public final class ProgrammingSubmissionUtils {
                 for (Map.Entry<String, SourceFile> entry : submissionSource.getSubmissionFiles().entrySet()) {
                     String fieldKey = entry.getKey();
                     SourceFile sourceFile = entry.getValue();
-                    fileSystemProvider.writeToFile(ImmutableList.of(submissionJid, fieldKey, sourceFile.getName()), sourceFile.getContent());
+                    fileSystemProvider.writeByteArrayToFile(ImmutableList.of(submissionJid, fieldKey, sourceFile.getName()), sourceFile.getContent());
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
