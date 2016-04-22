@@ -3,6 +3,7 @@ package org.iatoki.judgels.sandalphon.problem.programming.grading;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import org.iatoki.judgels.gabriel.GradingLanguageRegistry;
+import org.iatoki.judgels.gabriel.OutputOnlyMagic;
 
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,8 @@ public final class LanguageRestrictionAdapter {
                 result.retainAll(languageRestriction.getAllowedLanguageNames());
             }
         }
+
+        result.add(OutputOnlyMagic.KEY);
 
         return result;
     }
