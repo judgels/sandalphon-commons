@@ -22,6 +22,7 @@ public abstract class AbstractProgrammingSubmissionHibernateDao<M extends Abstra
         Root<M> root = query.from(getModelClass());
 
         query.where(cb.and(cb.equal(root.get(AbstractProgrammingSubmissionModel_.containerJid), containerJid), cb.le(root.get(AbstractProgrammingSubmissionModel_.timeCreate), time)));
+        query.orderBy(cb.asc(root.get(AbstractProgrammingSubmissionModel_.timeCreate)));
 
         return JPA.em().createQuery(query).getResultList();
     }
@@ -33,6 +34,7 @@ public abstract class AbstractProgrammingSubmissionHibernateDao<M extends Abstra
         Root<M> root = query.from(getModelClass());
 
         query.where(cb.and(cb.equal(root.get(AbstractProgrammingSubmissionModel_.containerJid), containerJid), cb.equal(root.get(AbstractProgrammingSubmissionModel_.userCreate), userJid), cb.equal(root.get(AbstractProgrammingSubmissionModel_.problemJid), problemJid)));
+        query.orderBy(cb.asc(root.get(AbstractProgrammingSubmissionModel_.timeCreate)));
 
         return JPA.em().createQuery(query).getResultList();
     }
