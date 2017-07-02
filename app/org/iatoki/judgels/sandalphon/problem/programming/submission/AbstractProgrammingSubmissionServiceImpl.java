@@ -179,6 +179,7 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
         gradingModel.details = result.getDetails();
 
         programmingGradingDao.edit(gradingModel, grader, graderIpAddress);
+        programmingGradingDao.flush();
 
         afterGrade(gradingJid, result);
     }
