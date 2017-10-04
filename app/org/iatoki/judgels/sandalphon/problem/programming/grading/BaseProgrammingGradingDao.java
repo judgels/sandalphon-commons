@@ -10,4 +10,6 @@ public interface BaseProgrammingGradingDao<M extends AbstractProgrammingGradingM
     M createGradingModel();
 
     Map<String, List<M>> getBySubmissionJids(List<String> submissionJids);
+
+    Map<String, M> getLatestBySubmissionJids(List<String> submissionJids);
 }

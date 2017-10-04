@@ -1,5 +1,6 @@
 package org.iatoki.judgels.sandalphon.problem.programming.submission;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
@@ -70,9 +71,9 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
     @Override
     public List<ProgrammingSubmission> getProgrammingSubmissionsWithGradingsByContainerJid(String containerJid) {
         List<SM> submissionModels = programmingSubmissionDao.findSortedByFiltersEq("id", "asc", "", ImmutableMap.of(AbstractProgrammingSubmissionModel_.containerJid, containerJid), 0, -1);
-        Map<String, List<GM>> gradingModelsMap = programmingGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
+        Map<String, GM> gradingModelsMap = programmingGradingDao.getLatestBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
 
-        return Lists.transform(submissionModels, m -> ProgrammingSubmissionServiceUtils.createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
+        return Lists.transform(submissionModels, m -> ProgrammingSubmissionServiceUtils.createSubmissionFromModels(m, ImmutableList.of(gradingModelsMap.get(m.jid))));
     }
 
     @Override
@@ -86,9 +87,9 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
     @Override
     public List<ProgrammingSubmission> getProgrammingSubmissionsWithGradingsByContainerJidBeforeTime(String containerJid, long time) {
         List<SM> submissionModels = programmingSubmissionDao.getByContainerJidSinceTime(containerJid, time);
-        Map<String, List<GM>> gradingModelsMap = programmingGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
+        Map<String, GM> gradingModelsMap = programmingGradingDao.getLatestBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
 
-        return Lists.transform(submissionModels, m -> ProgrammingSubmissionServiceUtils.createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
+        return Lists.transform(submissionModels, m -> ProgrammingSubmissionServiceUtils.createSubmissionFromModels(m, ImmutableList.of(gradingModelsMap.get(m.jid))));
     }
 
     @Override
