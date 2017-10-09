@@ -75,9 +75,7 @@ public abstract class AbstractProgrammingGradingHibernateDao<M extends AbstractP
             List<M> models = JPA.em().createQuery(query).getResultList();
 
             for (M model : models) {
-                if (result.containsKey(model.submissionJid)) {
-                    result.put(model.submissionJid, model);
-                }
+                result.put(model.submissionJid, model);
             }
         }
 
