@@ -6,7 +6,6 @@ import org.iatoki.judgels.gabriel.Verdict;
 import org.iatoki.judgels.sandalphon.problem.programming.grading.Grading;
 import org.iatoki.judgels.sandalphon.problem.programming.grading.AbstractProgrammingGradingModel;
 
-import java.util.Date;
 import java.util.List;
 
 public final class ProgrammingSubmissionServiceUtils {
@@ -20,7 +19,7 @@ public final class ProgrammingSubmissionServiceUtils {
     }
 
     public static ProgrammingSubmission createSubmissionFromModels(AbstractProgrammingSubmissionModel submissionModel, List<? extends AbstractProgrammingGradingModel> gradingModels) {
-        return new ProgrammingSubmission(submissionModel.id, submissionModel.jid, submissionModel.problemJid, submissionModel.containerJid, submissionModel.userCreate, submissionModel.gradingEngine, submissionModel.gradingLanguage, new Date(submissionModel.timeCreate),
+        return new ProgrammingSubmission(submissionModel.id, submissionModel.jid, submissionModel.problemJid, submissionModel.containerJid, submissionModel.createdBy, submissionModel.gradingEngine, submissionModel.gradingLanguage, submissionModel.createdAt,
                 Lists.transform(gradingModels, m -> createGradingFromModel(m))
         );
     }

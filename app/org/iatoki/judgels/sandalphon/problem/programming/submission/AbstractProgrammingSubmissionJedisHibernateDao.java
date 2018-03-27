@@ -1,5 +1,6 @@
 package org.iatoki.judgels.sandalphon.problem.programming.submission;
 
+import com.google.common.collect.Lists;
 import org.iatoki.judgels.play.model.AbstractJudgelsJedisHibernateDao;
 import org.iatoki.judgels.play.model.AbstractJudgelsModel_;
 import play.db.jpa.JPA;
@@ -8,6 +9,7 @@ import redis.clients.jedis.JedisPool;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.Date;
 import java.util.List;
 
 public abstract class AbstractProgrammingSubmissionJedisHibernateDao<M extends AbstractProgrammingSubmissionModel> extends AbstractJudgelsJedisHibernateDao<M> implements BaseProgrammingSubmissionDao<M> {
@@ -22,7 +24,7 @@ public abstract class AbstractProgrammingSubmissionJedisHibernateDao<M extends A
         CriteriaQuery<M> query = cb.createQuery(getModelClass());
         Root<M> root = query.from(getModelClass());
 
-        query.where(cb.and(cb.equal(root.get(AbstractProgrammingSubmissionModel_.containerJid), containerJid), cb.le(root.get(AbstractProgrammingSubmissionModel_.timeCreate), time)));
+        query.where(cb.and(cb.equal(root.get(AbstractProgrammingSubmissionModel_.containerJid), containerJid), cb.lessThanOrEqualTo(root.get(AbstractProgrammingSubmissionModel_.createdAt), new Date(time))));
 
         return JPA.em().createQuery(query).getResultList();
     }
@@ -33,7 +35,7 @@ public abstract class AbstractProgrammingSubmissionJedisHibernateDao<M extends A
         CriteriaQuery<M> query = cb.createQuery(getModelClass());
         Root<M> root = query.from(getModelClass());
 
-        query.where(cb.and(cb.equal(root.get(AbstractProgrammingSubmissionModel_.containerJid), containerJid), cb.equal(root.get(AbstractProgrammingSubmissionModel_.userCreate), userJid), cb.equal(root.get(AbstractProgrammingSubmissionModel_.problemJid), problemJid)));
+        query.where(cb.and(cb.equal(root.get(AbstractProgrammingSubmissionModel_.containerJid), containerJid), cb.equal(root.get(AbstractProgrammingSubmissionModel_.createdBy), userJid), cb.equal(root.get(AbstractProgrammingSubmissionModel_.problemJid), problemJid)));
 
         return JPA.em().createQuery(query).getResultList();
     }
@@ -44,7 +46,7 @@ public abstract class AbstractProgrammingSubmissionJedisHibernateDao<M extends A
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
         Root<M> root = query.from(getModelClass());
 
-        query.select(cb.count(root)).where(cb.and(cb.equal(root.get(AbstractProgrammingSubmissionModel_.containerJid), containerJid), cb.equal(root.get(AbstractProgrammingSubmissionModel_.userCreate), userJid), cb.equal(root.get(AbstractProgrammingSubmissionModel_.problemJid), problemJid)));
+        query.select(cb.count(root)).where(cb.and(cb.equal(root.get(AbstractProgrammingSubmissionModel_.containerJid), containerJid), cb.equal(root.get(AbstractProgrammingSubmissionModel_.createdBy), userJid), cb.equal(root.get(AbstractProgrammingSubmissionModel_.problemJid), problemJid)));
 
         return JPA.em().createQuery(query).getSingleResult();
     }
@@ -52,11 +54,11 @@ public abstract class AbstractProgrammingSubmissionJedisHibernateDao<M extends A
     @Override
     public List<Long> getAllSubmissionsSubmitTime() {
         CriteriaBuilder cb = JPA.em().getCriteriaBuilder();
-        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        CriteriaQuery<Date> query = cb.createQuery(Date.class);
         Root<M> root = query.from(getModelClass());
 
-        query.select(root.get(AbstractJudgelsModel_.timeCreate));
+        query.select(root.get(AbstractJudgelsModel_.createdAt));
 
-        return JPA.em().createQuery(query).getResultList();
+        return Lists.transform(JPA.em().createQuery(query).getResultList(), r -> r.toInstant().toEpochMilli());
     }
 }

@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import org.iatoki.judgels.sandalphon.problem.bundle.grading.BundleGrading;
 import org.iatoki.judgels.sandalphon.problem.bundle.grading.AbstractBundleGradingModel;
 
-import java.util.Date;
 import java.util.List;
 
 public final class BundleSubmissionServiceUtils {
@@ -19,7 +18,7 @@ public final class BundleSubmissionServiceUtils {
     }
 
     public static BundleSubmission createSubmissionFromModels(AbstractBundleSubmissionModel submissionModel, List<? extends AbstractBundleGradingModel> gradingModels) {
-        return new BundleSubmission(submissionModel.id, submissionModel.jid, submissionModel.problemJid, submissionModel.containerJid, submissionModel.userCreate, new Date(submissionModel.timeCreate),
+        return new BundleSubmission(submissionModel.id, submissionModel.jid, submissionModel.problemJid, submissionModel.containerJid, submissionModel.createdBy, submissionModel.createdAt,
                 Lists.transform(gradingModels, m -> createGradingFromModel(m))
         );
     }

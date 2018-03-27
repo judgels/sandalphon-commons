@@ -62,7 +62,7 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
 
     @Override
     public List<BundleSubmission> getBundleSubmissionsWithGradingsByContainerJidAndProblemJidAndUserJid(String containerJid, String problemJid, String userJid) {
-        List<SM> submissionModels = bundleSubmissionDao.findSortedByFiltersEq("id", "asc", "", ImmutableMap.<SingularAttribute<? super SM, ? extends Object>, String>of(AbstractBundleSubmissionModel_.containerJid, containerJid, AbstractBundleSubmissionModel_.problemJid, problemJid, AbstractBundleSubmissionModel_.userCreate, userJid), 0, -1);
+        List<SM> submissionModels = bundleSubmissionDao.findSortedByFiltersEq("id", "asc", "", ImmutableMap.<SingularAttribute<? super SM, ? extends Object>, String>of(AbstractBundleSubmissionModel_.containerJid, containerJid, AbstractBundleSubmissionModel_.problemJid, problemJid, AbstractBundleSubmissionModel_.createdBy, userJid), 0, -1);
         Map<String, List<GM>> gradingModelsMap = bundleGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
 
         return Lists.transform(submissionModels, m -> BundleSubmissionServiceUtils.createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
@@ -72,7 +72,7 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
     public List<BundleSubmission> getBundleSubmissionsByFilters(String orderBy, String orderDir, String authorJid, String problemJid, String containerJid) {
         ImmutableMap.Builder<SingularAttribute<? super SM, ? extends Object>, String> filterColumnsBuilder = ImmutableMap.builder();
         if (authorJid != null) {
-            filterColumnsBuilder.put(AbstractBundleSubmissionModel_.userCreate, authorJid);
+            filterColumnsBuilder.put(AbstractBundleSubmissionModel_.createdBy, authorJid);
         }
         if (problemJid != null) {
             filterColumnsBuilder.put(AbstractBundleSubmissionModel_.problemJid, problemJid);
@@ -99,7 +99,7 @@ public abstract class AbstractBundleSubmissionServiceImpl<SM extends AbstractBun
     public Page<BundleSubmission> getPageOfBundleSubmissions(long pageIndex, long pageSize, String orderBy, String orderDir, String authorJid, String problemJid, String containerJid) {
         ImmutableMap.Builder<SingularAttribute<? super SM, ? extends Object>, String> filterColumnsBuilder = ImmutableMap.builder();
         if (authorJid != null) {
-            filterColumnsBuilder.put(AbstractBundleSubmissionModel_.userCreate, authorJid);
+            filterColumnsBuilder.put(AbstractBundleSubmissionModel_.createdBy, authorJid);
         }
         if (problemJid != null) {
             filterColumnsBuilder.put(AbstractBundleSubmissionModel_.problemJid, problemJid);

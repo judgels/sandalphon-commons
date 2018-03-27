@@ -78,7 +78,7 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
 
     @Override
     public List<ProgrammingSubmission> getProgrammingSubmissionsWithGradingsByContainerJidAndProblemJidAndUserJid(String containerJid, String problemJid, String userJid) {
-        List<SM> submissionModels = programmingSubmissionDao.findSortedByFiltersEq("id", "asc", "", ImmutableMap.<SingularAttribute<? super SM, ? extends Object>, String>of(AbstractProgrammingSubmissionModel_.containerJid, containerJid, AbstractProgrammingSubmissionModel_.problemJid, problemJid, AbstractProgrammingSubmissionModel_.userCreate, userJid), 0, -1);
+        List<SM> submissionModels = programmingSubmissionDao.findSortedByFiltersEq("id", "asc", "", ImmutableMap.<SingularAttribute<? super SM, ? extends Object>, String>of(AbstractProgrammingSubmissionModel_.containerJid, containerJid, AbstractProgrammingSubmissionModel_.problemJid, problemJid, AbstractProgrammingSubmissionModel_.createdBy, userJid), 0, -1);
         Map<String, List<GM>> gradingModelsMap = programmingGradingDao.getBySubmissionJids(Lists.transform(submissionModels, m -> m.jid));
 
         return Lists.transform(submissionModels, m -> ProgrammingSubmissionServiceUtils.createSubmissionFromModels(m, gradingModelsMap.get(m.jid)));
@@ -103,7 +103,7 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
     public List<ProgrammingSubmission> getProgrammingSubmissionsByFilters(String orderBy, String orderDir, String authorJid, String problemJid, String containerJid) {
         ImmutableMap.Builder<SingularAttribute<? super SM, ? extends Object>, String> filterColumnsBuilder = ImmutableMap.builder();
         if (authorJid != null) {
-            filterColumnsBuilder.put(AbstractProgrammingSubmissionModel_.userCreate, authorJid);
+            filterColumnsBuilder.put(AbstractProgrammingSubmissionModel_.createdBy, authorJid);
         }
         if (problemJid != null) {
             filterColumnsBuilder.put(AbstractProgrammingSubmissionModel_.problemJid, problemJid);
@@ -123,7 +123,7 @@ public abstract class AbstractProgrammingSubmissionServiceImpl<SM extends Abstra
     public Page<ProgrammingSubmission> getPageOfProgrammingSubmissions(long pageIndex, long pageSize, String orderBy, String orderDir, String authorJid, String problemJid, String containerJid) {
         ImmutableMap.Builder<SingularAttribute<? super SM, ? extends Object>, String> filterColumnsBuilder = ImmutableMap.builder();
         if (authorJid != null) {
-            filterColumnsBuilder.put(AbstractProgrammingSubmissionModel_.userCreate, authorJid);
+            filterColumnsBuilder.put(AbstractProgrammingSubmissionModel_.createdBy, authorJid);
         }
         if (problemJid != null) {
             filterColumnsBuilder.put(AbstractProgrammingSubmissionModel_.problemJid, problemJid);
